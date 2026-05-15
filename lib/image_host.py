@@ -54,12 +54,32 @@ GITHUB_BRANCH = "main"
 
 
 def repo_root() -> Path:
-    """Locate the local clone of the assets repo. Raises if not found."""
+    """Locate the local clone of the assets repo. Raises if not found.
+
+    Order of resolution:
+      1. $GITHUB_WORKSPACE  — set by GitHub Actions runners
+      2. Walk up from this file looking for a .git directory  — handles any clone location
+      3. Fixed _REPO_CANDIDATES  — Mac + Cowork sandbox paths
+    """
+    import os
+
+    gha = os.environ.get("GITHUB_WORKSPACE")
+    if gha:
+        p = Path(gha)
+        if p.exists() and (p / ".git").exists():
+            return p
+
+    # Walk up from this file
+    here = Path(__file__).resolve().parent
+    for ancestor in [here, *here.parents]:
+        if (ancestor / ".git").exists() and (ancestor / "lib").exists():
+            return ancestor
+
     for c in _REPO_CANDIDATES:
         if c.exists() and (c / ".git").exists():
             return c
     raise RuntimeError(
-        f"Assets repo not found at any expected path. Tried: {_REPO_CANDIDATES}. "
+        f"Assets repo not found at any expected path. Tried GITHUB_WORKSPACE, ancestors, and {_REPO_CANDIDATES}. "
         "Clone with: git clone https://github.com/shortgoequinechiro-rgb/shortgo-marketing-assets.git"
     )
 
