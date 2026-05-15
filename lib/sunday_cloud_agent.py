@@ -261,10 +261,37 @@ def main() -> int:
         })
         print(f"  Staged {plan['post_id']}")
 
-    # 3. (In cloud env, git push happens via the calling GitHub Action;
-    #     in local-Mac env, the user does it via osascript)
+    # 3. In cloud env, push staged images NOW so Meta can fetch them when
+    #    we hit the schedule API a few lines below. Without this, FB
+    #    scheduling 400s because raw.githubusercontent.com returns 404 for
+    #    yet-uncommitted blobs. Local-Mac env still relies on osascript push.
     print()
-    print("Staged images committed; rely on host runner to git push.")
+    if os.environ.get("GITHUB_WORKSPACE") and os.environ.get("GITHUB_ACTIONS") == "true":
+        import subprocess
+        try:
+            subprocess.run(["git", "config", "user.name", "Short Go Agent"],
+                          cwd=str(repo_root), check=True, capture_output=True)
+            subprocess.run(["git", "config", "user.email", "shortgoequinechiro@gmail.com"],
+                          cwd=str(repo_root), check=True, capture_output=True)
+            subprocess.run(["git", "add", "posts/", "previews/"],
+                          cwd=str(repo_root), check=True, capture_output=True)
+            diff = subprocess.run(["git", "diff", "--staged", "--quiet"],
+                                 cwd=str(repo_root), capture_output=True)
+            if diff.returncode != 0:
+                subprocess.run(["git", "commit", "-m", "Sunday agent: staged images"],
+                              cwd=str(repo_root), check=True, capture_output=True)
+                subprocess.run(["git", "push"],
+                              cwd=str(repo_root), check=True, capture_output=True)
+                print("Mid-run push: posts/ + previews/ committed to GitHub.")
+                # Give raw.githubusercontent.com a moment to surface the new blobs
+                import time
+                time.sleep(8)
+            else:
+                print("Mid-run push: nothing to commit (images already on origin).")
+        except subprocess.CalledProcessError as e:
+            print(f"Mid-run push FAILED ({e}). FB scheduling will likely 404.", file=sys.stderr)
+    else:
+        print("Staged images committed; rely on host runner to git push.")
 
     # 4. Schedule FB posts + defer IG
     from post_to_meta import load_credentials as load_meta, schedule_facebook_post, MetaCreds
