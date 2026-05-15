@@ -1,0 +1,57 @@
+name: Hourly IG Due-Fire
+
+on:
+  schedule:
+    - cron: '0 * * * *'      # top of every hour
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  fire-due-ig-posts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Skip if no pending IG state
+        id: check
+        run: |
+          if [ ! -f state/pending-ig.json ] || [ "$(cat state/pending-ig.json)" = "[]" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "No pending IG posts; skipping."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fire due IG posts
+        if: steps.check.outputs.skip != 'true'
+        env:
+          META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+          META_PAGE_ID:           ${{ secrets.META_PAGE_ID }}
+          META_IG_USER_ID:        ${{ secrets.META_IG_USER_ID }}
+        run: |
+          cd "${GITHUB_WORKSPACE}"
+          python lib/fire_due_ig_posts_cloud.py
+
+      - name: Commit state changes
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          git config user.name "Short Go Agent"
+          git config user.email "shortgoequinechiro@gmail.com"
+          git add state/
+          if git diff --staged --quiet; then
+            echo "No state changes."
+          else
+            git commit -m "IG hourly fire $(date -u +%Y-%m-%dT%H)"
+            git push
+          fi
