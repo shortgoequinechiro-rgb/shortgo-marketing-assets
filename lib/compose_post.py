@@ -416,7 +416,7 @@ def _layout_educational(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) 
     hook_start_y = 540 - (total_hook_h // 2) + (line_h // 2)
 
     for i, line in enumerate(wrapped_hook):
-        _draw_centered(draw, hook_start_y + i * line_h, line, hook_font, CREAM, tracking=1, stroke_width=3)
+        _draw_centered(draw, hook_start_y + i * line_h, line, hook_font, CREAM, tracking=1, stroke_width=1)
 
     # Divider under hook
     div_y = hook_start_y + total_hook_h + 14
@@ -475,15 +475,26 @@ def _layout_cta(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> None:
     CTA / booking-area post: big short hook + 1-line where/when + explainer.
     Used for "Booking DFW this weekend" / "Heading to Coppell Thursday" angles.
     """
-    # Hook handles 1–3 lines; this is usually 1 line.
+    # Pre-wrap hook so it always fits the safe width (this template was the
+    # one place "WE COME TO YOUR BARN." used to clip on the right).
+    hook_safe_w = CANVAS_SIZE - (2 * MARGIN) - 30
     hook_font = fonts["hook_big"] if len(spec.hook) == 1 else fonts["hook_med"]
+    wrapped_hook: list[str] = []
+    for line in spec.hook:
+        wrapped_hook.extend(_wrap_to_width(line, hook_font, hook_safe_w, tracking=1))
+    # Step down hook size if wrap produced too many lines
+    if len(wrapped_hook) > 2 and hook_font is fonts["hook_big"]:
+        hook_font = fonts["hook_med"]
+        wrapped_hook = []
+        for line in spec.hook:
+            wrapped_hook.extend(_wrap_to_width(line, hook_font, hook_safe_w, tracking=1))
     line_h = 110 if hook_font is fonts["hook_big"] else 82
 
-    total_hook_h = line_h * len(spec.hook)
+    total_hook_h = line_h * len(wrapped_hook)
     hook_start_y = 580 - (total_hook_h // 2) + (line_h // 2)
 
-    for i, line in enumerate(spec.hook):
-        _draw_centered(draw, hook_start_y + i * line_h, line, hook_font, CREAM, tracking=1, stroke_width=3)
+    for i, line in enumerate(wrapped_hook):
+        _draw_centered(draw, hook_start_y + i * line_h, line, hook_font, CREAM, tracking=1, stroke_width=1)
 
     div_y = hook_start_y + total_hook_h + 14
     draw.line([(CANVAS_SIZE // 2 - 60, div_y), (CANVAS_SIZE // 2 + 60, div_y)],
