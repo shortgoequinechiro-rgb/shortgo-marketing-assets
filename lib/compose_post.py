@@ -73,14 +73,34 @@ MARGIN = 50
 # ---------------------------------------------------------------------------
 
 def _font(path: Path, size: int, weight: int | None = None) -> ImageFont.FreeTypeFont:
-    """Load a variable font at a given size and (if supported) weight axis."""
+    """Load a variable font at a given size and (if supported) weight axis.
+
+    Tries the variation axis first; if that's a no-op (font reports support but
+    doesn't render heavier), falls back to set_variation_by_name with the
+    nearest named instance ("Black"/"ExtraBold"/"Bold"/"SemiBold"/"Medium"/"Regular").
+    """
     f = ImageFont.truetype(str(path), size)
-    if weight is not None:
-        try:
-            f.set_variation_by_axes([weight])
-        except Exception:
-            # Non-variable font or unsupported axis — fall back to plain weight
-            pass
+    if weight is None:
+        return f
+    set_axis_ok = False
+    try:
+        f.set_variation_by_axes([weight])
+        set_axis_ok = True
+    except Exception:
+        pass
+    # Belt-and-suspenders: also try the named instance, which is what reliably
+    # binds on Inter.ttf in some Pillow builds.
+    name_map = [
+        (900, "Black"), (800, "ExtraBold"), (700, "Bold"),
+        (600, "SemiBold"), (500, "Medium"), (400, "Regular"),
+        (300, "Light"), (200, "ExtraLight"), (100, "Thin"),
+    ]
+    target_name = next((n for w, n in name_map if weight >= w), "Regular")
+    try:
+        f.set_variation_by_name(target_name)
+    except Exception:
+        # Some Pillow versions raise if axis was already set; ignore.
+        pass
     return f
 
 
@@ -103,8 +123,15 @@ def _draw_tracked(
     fill: tuple,
     tracking: int = 0,
     shadow: bool = False,
+    stroke_width: int = 0,
+    stroke_fill: tuple | None = None,
 ) -> None:
-    """Draw text with explicit per-character spacing (for letter-spacing control)."""
+    """Draw text with explicit per-character spacing and optional drop-shadow + outline.
+
+    `stroke_width` draws a colored halo around each glyph (the most effective
+    way to keep small text legible on noisy photo backgrounds). `shadow` keeps
+    the existing offset drop-shadow for editorial depth.
+    """
     x, y = xy
     if shadow:
         sx = x
@@ -112,8 +139,13 @@ def _draw_tracked(
             draw.text((sx + 2, y + 2), ch, font=font, fill=SHADOW)
             bbox = font.getbbox(ch)
             sx += (bbox[2] - bbox[0]) + tracking
+    sfill = stroke_fill or (0, 0, 0, 220)
     for ch in text:
-        draw.text((x, y), ch, font=font, fill=fill)
+        if stroke_width > 0:
+            draw.text((x, y), ch, font=font, fill=fill,
+                      stroke_width=stroke_width, stroke_fill=sfill)
+        else:
+            draw.text((x, y), ch, font=font, fill=fill)
         bbox = font.getbbox(ch)
         x += (bbox[2] - bbox[0]) + tracking
 
@@ -127,11 +159,13 @@ def _draw_centered(
     canvas_w: int = CANVAS_SIZE,
     tracking: int = 0,
     shadow: bool = True,
+    stroke_width: int = 0,
 ) -> None:
-    """Center text horizontally at the given y, with optional drop shadow."""
+    """Center text horizontally at the given y, with optional drop shadow + stroke."""
     tw = _text_width(text, font, tracking)
     x = (canvas_w - tw) // 2
-    _draw_tracked(draw, (x, y), text, font, fill, tracking=tracking, shadow=shadow)
+    _draw_tracked(draw, (x, y), text, font, fill, tracking=tracking, shadow=shadow,
+                  stroke_width=stroke_width)
 
 
 def _wrap_to_width(
@@ -225,15 +259,17 @@ def _draw_cornermark(
     cornermark_sub: str,
 ) -> None:
     """Top-left: tracked uppercase wordmark + divider + service area sub-line.
-    Drop shadow ensures legibility even where the top gradient is mild."""
+    Stroke outline + drop shadow ensure legibility on any background."""
     mark_font = fonts["mark"]
     sub_font = fonts["mark_sub"]
-    _draw_tracked(draw, (MARGIN, MARGIN), cornermark, mark_font, CREAM, tracking=3, shadow=True)
+    _draw_tracked(draw, (MARGIN, MARGIN), cornermark, mark_font, CREAM, tracking=3,
+                  shadow=True, stroke_width=2)
     line_x_end = MARGIN + _text_width(cornermark, mark_font, tracking=3)
     # Divider sits just below the wordmark baseline; shadow first then bright line
     draw.line([(MARGIN + 1, MARGIN + 38), (line_x_end + 1, MARGIN + 38)], fill=SHADOW_LIGHT, width=1)
-    draw.line([(MARGIN, MARGIN + 37), (line_x_end, MARGIN + 37)], fill=CREAM_DIM, width=1)
-    _draw_tracked(draw, (MARGIN, MARGIN + 48), cornermark_sub, sub_font, CREAM, tracking=2, shadow=True)
+    draw.line([(MARGIN, MARGIN + 37), (line_x_end, MARGIN + 37)], fill=CREAM, width=2)
+    _draw_tracked(draw, (MARGIN, MARGIN + 48), cornermark_sub, sub_font, CREAM, tracking=2,
+                  shadow=True, stroke_width=2)
 
 
 def _draw_service_tags(
@@ -262,8 +298,9 @@ def _draw_service_tags(
     for i, tag in enumerate(tags):
         tw = _text_width(tag, tag_font, tracking=tracking)
         x = CANVAS_SIZE - MARGIN - tw
-        fill = CREAM if i == 0 else CREAM_DIM
-        _draw_tracked(draw, (x, y), tag, tag_font, fill, tracking=tracking, shadow=True)
+        # All tags rendered in full cream + stroke; no dim secondary
+        _draw_tracked(draw, (x, y), tag, tag_font, CREAM, tracking=tracking,
+                      shadow=True, stroke_width=2)
         y += size + 7
 
 
@@ -277,9 +314,11 @@ def _draw_contact_block(
     """Bottom: big gold phone in serif, then web · CTA in tracked sans."""
     phone_font = fonts["phone"]
     web_font = fonts["web"]
-    _draw_centered(draw, CANVAS_SIZE - 130, phone, phone_font, GOLD, tracking=1, shadow=True)
+    _draw_centered(draw, CANVAS_SIZE - 130, phone, phone_font, GOLD, tracking=1,
+                   shadow=True, stroke_width=2)
     combined = f"{web}  ·  {cta}"
-    _draw_centered(draw, CANVAS_SIZE - 55, combined, web_font, CREAM, tracking=2, shadow=True)
+    _draw_centered(draw, CANVAS_SIZE - 55, combined, web_font, CREAM, tracking=2,
+                   shadow=True, stroke_width=2)
 
 
 # ---------------------------------------------------------------------------
@@ -377,7 +416,7 @@ def _layout_educational(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) 
     hook_start_y = 540 - (total_hook_h // 2) + (line_h // 2)
 
     for i, line in enumerate(wrapped_hook):
-        _draw_centered(draw, hook_start_y + i * line_h, line, hook_font, CREAM, tracking=1)
+        _draw_centered(draw, hook_start_y + i * line_h, line, hook_font, CREAM, tracking=1, stroke_width=3)
 
     # Divider under hook
     div_y = hook_start_y + total_hook_h + 14
@@ -418,7 +457,7 @@ def _layout_educational(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) 
         for wrapped in _wrap_to_width(line, body_font, body_safe_w):
             if sy > bottom_limit - line_h:
                 break
-            _draw_centered(draw, sy, wrapped, body_font, CREAM, tracking=0)
+            _draw_centered(draw, sy, wrapped, body_font, CREAM, tracking=0, stroke_width=2)
             sy += line_h
         sy += gap
 
@@ -427,7 +466,7 @@ def _layout_educational(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) 
         for wrapped in _wrap_to_width(spec.explainer, explainer_font, body_safe_w):
             if sy > bottom_limit - exp_line_h:
                 break
-            _draw_centered(draw, sy, wrapped, explainer_font, CREAM, tracking=0)
+            _draw_centered(draw, sy, wrapped, explainer_font, CREAM, tracking=0, stroke_width=2)
             sy += exp_line_h
 
 
@@ -444,7 +483,7 @@ def _layout_cta(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> None:
     hook_start_y = 580 - (total_hook_h // 2) + (line_h // 2)
 
     for i, line in enumerate(spec.hook):
-        _draw_centered(draw, hook_start_y + i * line_h, line, hook_font, CREAM, tracking=1)
+        _draw_centered(draw, hook_start_y + i * line_h, line, hook_font, CREAM, tracking=1, stroke_width=3)
 
     div_y = hook_start_y + total_hook_h + 14
     draw.line([(CANVAS_SIZE // 2 - 60, div_y), (CANVAS_SIZE // 2 + 60, div_y)],
@@ -458,7 +497,7 @@ def _layout_cta(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> None:
         for wrapped in _wrap_to_width(line, fonts["body"], body_safe_w):
             if sy > bottom_limit - 34:
                 break
-            _draw_centered(draw, sy, wrapped, fonts["body"], CREAM, tracking=0)
+            _draw_centered(draw, sy, wrapped, fonts["body"], CREAM, tracking=0, stroke_width=2)
             sy += 34
         sy += 4
 
@@ -467,7 +506,7 @@ def _layout_cta(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> None:
         for wrapped in _wrap_to_width(spec.explainer, fonts["explainer"], body_safe_w):
             if sy > bottom_limit - 30:
                 break
-            _draw_centered(draw, sy, wrapped, fonts["explainer"], CREAM, tracking=0)
+            _draw_centered(draw, sy, wrapped, fonts["explainer"], CREAM, tracking=0, stroke_width=2)
             sy += 30
 
 
@@ -494,7 +533,7 @@ def _layout_quote(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> Non
     start_y = 540 - (total_h // 2) + (line_h // 2)
 
     for i, line in enumerate(wrapped):
-        _draw_centered(draw, start_y + i * line_h, line, quote_font, CREAM, tracking=1)
+        _draw_centered(draw, start_y + i * line_h, line, quote_font, CREAM, tracking=1, stroke_width=2)
 
     # Attribution line under quote (uses explainer slot, wrapped to safe width)
     if spec.explainer:
@@ -502,7 +541,7 @@ def _layout_quote(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> Non
         attr_y = start_y + total_h + 30
         wrapped = _wrap_to_width(f"— {spec.explainer}", fonts["explainer"], attr_safe_w, tracking=2)
         for line in wrapped:
-            _draw_centered(draw, attr_y, line, fonts["explainer"], CREAM, tracking=2)
+            _draw_centered(draw, attr_y, line, fonts["explainer"], CREAM, tracking=2, stroke_width=2)
             attr_y += 32
 
 
