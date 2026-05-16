@@ -116,6 +116,22 @@ class PostBrief:
     ig_status: str = "deferred"     # "scheduled" | "deferred" | "fired"
 
 
+@dataclass
+class CompetitorScanSummary:
+    """Lightweight summary surfaced in the recap email so Charles sees what
+    competitive signal the agent used to differentiate this week's posts."""
+    scanned_at_human: str = ""
+    topics_avoided: list[str] = None  # type: ignore[assignment]
+    hooks_avoided: list[str] = None   # type: ignore[assignment]
+    styles_avoided: list[str] = None  # type: ignore[assignment]
+    age_days: int = 0
+
+    def __post_init__(self):
+        if self.topics_avoided is None: self.topics_avoided = []
+        if self.hooks_avoided is None: self.hooks_avoided = []
+        if self.styles_avoided is None: self.styles_avoided = []
+
+
 def _render_failures_html(failures: list[dict]) -> str:
     """Render a '⚠️ Issues this run' block at the top of the email.
 
@@ -198,7 +214,42 @@ def _reject_url(post_id: str) -> str:
     )
 
 
-def render_weekly_email_html(briefs: Iterable[PostBrief], failures: list[dict] | None = None) -> str:
+def _render_competitor_html(c: "CompetitorScanSummary | None") -> str:
+    if not c or not (c.topics_avoided or c.hooks_avoided or c.styles_avoided):
+        return ""
+    chips = lambda items: "".join(
+        f'<span style="display:inline-block;background:#eef2f7;color:#1c3a5e;padding:3px 8px;border-radius:999px;font-size:11px;margin:2px 4px 2px 0;">{x}</span>'
+        for x in items[:6]
+    )
+    sections = []
+    if c.topics_avoided:
+        sections.append(f'<div style="margin-bottom:6px;"><strong style="font-size:12px;color:#3a3a3a;">Topics avoided:</strong><br>{chips(c.topics_avoided)}</div>')
+    if c.hooks_avoided:
+        sections.append(f'<div style="margin-bottom:6px;"><strong style="font-size:12px;color:#3a3a3a;">Hook patterns avoided:</strong><br>{chips(c.hooks_avoided)}</div>')
+    if c.styles_avoided:
+        sections.append(f'<div><strong style="font-size:12px;color:#3a3a3a;">Visual styles avoided:</strong><br>{chips(c.styles_avoided)}</div>')
+    age = f" — scan {c.age_days}d old" if c.age_days else ""
+    return f"""
+<tr>
+  <td style="padding: 0 0 16px 0;">
+    <div style="background:#f7faff;border:1px solid #d8e3f0;border-radius:8px;padding:14px 18px;">
+      <div style="font:700 13px/1.4 -apple-system,sans-serif;color:#1c3a5e;margin-bottom:8px;">
+        🧭 Competitor differentiation{age}
+      </div>
+      <div style="font:400 12px/1.5 -apple-system,sans-serif;color:#3a3a3a;">
+        {"".join(sections)}
+      </div>
+    </div>
+  </td>
+</tr>
+"""
+
+
+def render_weekly_email_html(
+    briefs: Iterable[PostBrief],
+    failures: list[dict] | None = None,
+    competitor: "CompetitorScanSummary | None" = None,
+) -> str:
     """Compose the recap email HTML."""
     briefs = list(briefs)
     failures = failures or []
@@ -274,6 +325,7 @@ def render_weekly_email_html(briefs: Iterable[PostBrief], failures: list[dict] |
             </td>
           </tr>
           {failures_block}
+          {_render_competitor_html(competitor)}
           {posts_table}
           <tr>
             <td style="padding-top: 24px; font: 400 12px/1.4 -apple-system, sans-serif; color: #9a9a9a;">
@@ -323,6 +375,7 @@ def send_weekly_recap(
     briefs: Iterable[PostBrief],
     creds: NotifyCreds | None = None,
     failures: list[dict] | None = None,
+    competitor: "CompetitorScanSummary | None" = None,
 ) -> dict:
     """End-to-end: render + send the weekly recap email.
 
@@ -333,7 +386,7 @@ def send_weekly_recap(
     failures = failures or []
     if not briefs and not failures:
         return {"skipped": True, "reason": "no posts and no failures to recap"}
-    html = render_weekly_email_html(briefs, failures=failures)
+    html = render_weekly_email_html(briefs, failures=failures, competitor=competitor)
     text = render_weekly_email_text(briefs, failures=failures)
     if briefs:
         noun = "post" if len(briefs) == 1 else "posts"

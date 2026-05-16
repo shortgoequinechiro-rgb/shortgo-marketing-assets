@@ -81,6 +81,7 @@ def draft_weekly_posts(
     content_log: str,
     available_backgrounds: list[str],
     api_key: str,
+    avoid_section: str = "",
 ) -> list[dict]:
     """Call Claude API to draft 3 posts for the coming week.
 
@@ -125,6 +126,7 @@ SCHEDULE TARGETS (in order):
 - Wed: {targets[0]}
 - Fri: {targets[1]}
 - Sun: {targets[2]}
+{avoid_section}
 
 OUTPUT: respond with ONLY a JSON array of 3 post objects (no prose, no markdown fence). Each object:
 {{
@@ -211,9 +213,28 @@ def main() -> int:
     ])
     print(f"Loaded context. {len(backgrounds)} backgrounds available.")
 
-    # 1. Draft 3 posts via Claude API
+    # 1a. Competitor landscape scan (cached 7 days — usually free)
+    from competitor_scan import scan_competitor_landscape, format_avoid_section, load_cached
+    avoid_section = ""
+    try:
+        cached = load_cached()
+        if cached and cached.is_fresh():
+            print(f"Competitor scan cache fresh ({cached.age.days}d old) — reusing.")
+            brief = cached
+        else:
+            print("Competitor scan: running web search (cache stale or missing)...")
+            brief = scan_competitor_landscape(api_key=secrets["anthropic_api_key"])
+            print(f"  Found {len(brief.recent_topics)} topics, "
+                  f"{len(brief.common_hook_patterns)} hook patterns, "
+                  f"{len(brief.dominant_visual_styles)} visual styles to avoid.")
+        avoid_section = format_avoid_section(brief)
+    except Exception as e:
+        print(f"  Competitor scan FAILED ({e}). Continuing without AVOID block.")
+
+    # 1b. Draft 3 posts via Claude API
     print("Drafting 3 posts via Claude API...")
-    plans = draft_weekly_posts(business_context, content_log, backgrounds, secrets["anthropic_api_key"])
+    plans = draft_weekly_posts(business_context, content_log, backgrounds,
+                                secrets["anthropic_api_key"], avoid_section=avoid_section)
     print(f"  Drafted {len(plans)} posts:")
     for p in plans:
         print(f"    - {p['post_id']} ({p['post_type']}) — {' '.join(p['hook'])[:60]}")
@@ -361,7 +382,26 @@ def main() -> int:
         from_email=secrets["notify_from"],
         from_name=secrets["notify_from_name"],
     )
-    email_resp = send_weekly_recap(briefs, creds=notify_creds)
+    # Surface the competitor brief in the email so Charles sees what differentiation
+    # the agent leaned into this week.
+    competitor_summary = None
+    try:
+        from competitor_scan import load_cached as _load_cached
+        from notify_weekly_email import CompetitorScanSummary
+        c = _load_cached()
+        if c:
+            scanned_dt = datetime.fromisoformat(c.scanned_at)
+            competitor_summary = CompetitorScanSummary(
+                scanned_at_human=scanned_dt.astimezone(tz_chi).strftime("%a %b %-d"),
+                topics_avoided=c.recent_topics[:6],
+                hooks_avoided=c.common_hook_patterns[:5],
+                styles_avoided=c.dominant_visual_styles[:5],
+                age_days=c.age.days,
+            )
+    except Exception as e:
+        print(f"  (competitor summary unavailable: {e})")
+
+    email_resp = send_weekly_recap(briefs, creds=notify_creds, competitor=competitor_summary)
     print(f"Recap email sent: {email_resp}")
 
     # 6. Append PROPOSED entries to content-log
