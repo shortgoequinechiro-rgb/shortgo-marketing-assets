@@ -82,7 +82,6 @@ def draft_weekly_posts(
     available_backgrounds: list[str],
     api_key: str,
     avoid_section: str = "",
-    schedule_section: str = "",
 ) -> list[dict]:
     """Call Claude API to draft 3 posts for the coming week.
 
@@ -127,7 +126,6 @@ SCHEDULE TARGETS (in order):
 - Wed: {targets[0]}
 - Fri: {targets[1]}
 - Sun: {targets[2]}
-{schedule_section}
 {avoid_section}
 
 OUTPUT: respond with ONLY a JSON array of 3 post objects (no prose, no markdown fence). Each object:
@@ -147,7 +145,7 @@ HARD CONSTRAINTS (non-negotiable):
     Wed slot  → post_type = "educational"  (teach something — 3 symptom bullets + insight)
     Fri slot  → post_type = "quote"        (rider/owner voice or proof framing — short punchy quote + attribution)
     Sun slot  → post_type = "cta"          (book + maintenance reminder — direct call to action)
-- NEVER name a specific city/barn/event/weekend UNLESS Drew's confirmed schedule (below) lists it. Use generic regional language ("DFW," "North Texas," "Great Falls area") freely otherwise.
+- NEVER name a specific city/barn/event/weekend. Use generic regional language only ("DFW," "North Texas," "Great Falls area"). Charles posts location-specific content manually outside the agent.
 - Every CTA must end with a DM/BOOK or "Book now" variant
 - TX or MT geographic cue in every caption
 - Plain rider voice — never clinical jargon
@@ -236,27 +234,11 @@ def main() -> int:
     except Exception as e:
         print(f"  Competitor scan FAILED ({e}). Continuing without AVOID block.")
 
-    # 1c. Drew's confirmed schedule for the coming week (optional input file)
-    schedule_section = ""
-    try:
-        from schedule_input import upcoming_week, format_schedule_block
-        entries = upcoming_week()
-        schedule_section = format_schedule_block(entries)
-        if entries:
-            print(f"Drew's schedule: {len(entries)} confirmed stops loaded.")
-            for e in entries:
-                print(f"  {e.day_label} → {e.location}")
-        else:
-            print("Drew's schedule: no upcoming entries — CTAs will use generic regional language.")
-    except Exception as e:
-        print(f"  Schedule input FAILED ({e}). Continuing with generic CTAs.")
-
-    # 1d. Draft 3 posts via Claude API
+    # 1b. Draft 3 posts via Claude API
     print("Drafting 3 posts via Claude API...")
     plans = draft_weekly_posts(business_context, content_log, backgrounds,
                                 secrets["anthropic_api_key"],
-                                avoid_section=avoid_section,
-                                schedule_section=schedule_section)
+                                avoid_section=avoid_section)
     print(f"  Drafted {len(plans)} posts:")
     for p in plans:
         print(f"    - {p['post_id']} ({p['post_type']}) — {' '.join(p['hook'])[:60]}")
