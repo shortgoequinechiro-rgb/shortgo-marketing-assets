@@ -134,6 +134,46 @@ def _draw_centered(
     _draw_tracked(draw, (x, y), text, font, fill, tracking=tracking, shadow=shadow)
 
 
+def _wrap_to_width(
+    text: str,
+    font: ImageFont.FreeTypeFont,
+    max_width: int,
+    tracking: int = 0,
+) -> list[str]:
+    """Greedy word-wrap so no line exceeds max_width pixels.
+
+    Falls back to character-wrap for any single word that's still too wide.
+    """
+    if not text:
+        return [""]
+    words = text.split()
+    lines: list[str] = []
+    cur = ""
+    for w in words:
+        candidate = w if not cur else f"{cur} {w}"
+        if _text_width(candidate, font, tracking) <= max_width:
+            cur = candidate
+        else:
+            if cur:
+                lines.append(cur)
+            # Hard-wrap a single oversized word
+            if _text_width(w, font, tracking) > max_width:
+                chunk = ""
+                for ch in w:
+                    test = chunk + ch
+                    if _text_width(test, font, tracking) > max_width and chunk:
+                        lines.append(chunk)
+                        chunk = ch
+                    else:
+                        chunk = test
+                cur = chunk
+            else:
+                cur = w
+    if cur:
+        lines.append(cur)
+    return lines
+
+
 # ---------------------------------------------------------------------------
 # Layout pieces
 # ---------------------------------------------------------------------------
@@ -201,15 +241,30 @@ def _draw_service_tags(
     fonts: dict,
     tags: Sequence[str],
 ) -> None:
-    """Top-right: short service descriptors stacked right-aligned. Shadowed for legibility."""
+    """Top-right: short service descriptors stacked right-aligned. Shadowed for legibility.
+
+    Auto-shrinks the font size if the widest tag would clip the right margin.
+    Tracking is reduced to 1 to recover ~5–10 px in addition to size scaling.
+    """
+    # Safe right-side width must equal cornermark column on the left (MARGIN)
+    safe_w = CANVAS_SIZE - (2 * MARGIN)
+    tracking = 1
     tag_font = fonts["tag"]
+    # Find size that fits the widest tag
+    max_w = max((_text_width(t, tag_font, tracking=tracking) for t in tags), default=0)
+    size = tag_font.size if hasattr(tag_font, "size") else 15
+    while max_w > safe_w and size > 10:
+        size -= 1
+        tag_font = _font(_LIB_DIR / "fonts" / "Inter.ttf", size, 600)
+        max_w = max((_text_width(t, tag_font, tracking=tracking) for t in tags), default=0)
+
     y = MARGIN
     for i, tag in enumerate(tags):
-        tw = _text_width(tag, tag_font, tracking=2)
+        tw = _text_width(tag, tag_font, tracking=tracking)
         x = CANVAS_SIZE - MARGIN - tw
         fill = CREAM if i == 0 else CREAM_DIM
-        _draw_tracked(draw, (x, y), tag, tag_font, fill, tracking=2, shadow=True)
-        y += 22
+        _draw_tracked(draw, (x, y), tag, tag_font, fill, tracking=tracking, shadow=True)
+        y += size + 7
 
 
 def _draw_contact_block(
@@ -304,14 +359,24 @@ def _layout_educational(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) 
     Educational post: hook (1–2 lines) + 3 symptom bullets + one-line explainer.
     Used for "It's not the bit." / "3 signs your horse..." angles.
     """
-    # Pick hook font size based on line count
+    # Pre-wrap hook lines so each fits the safe width
+    hook_safe_w = CANVAS_SIZE - (2 * MARGIN) - 30
     hook_font = fonts["hook_big"] if len(spec.hook) <= 2 else fonts["hook_med"]
+    wrapped_hook: list[str] = []
+    for line in spec.hook:
+        wrapped_hook.extend(_wrap_to_width(line, hook_font, hook_safe_w, tracking=1))
+    # If wrapping ballooned the line count, fall back to smaller hook font
+    if len(wrapped_hook) > 2 and hook_font is fonts["hook_big"]:
+        hook_font = fonts["hook_med"]
+        wrapped_hook = []
+        for line in spec.hook:
+            wrapped_hook.extend(_wrap_to_width(line, hook_font, hook_safe_w, tracking=1))
     line_h = 110 if hook_font is fonts["hook_big"] else 82
 
-    total_hook_h = line_h * len(spec.hook)
+    total_hook_h = line_h * len(wrapped_hook)
     hook_start_y = 540 - (total_hook_h // 2) + (line_h // 2)
 
-    for i, line in enumerate(spec.hook):
+    for i, line in enumerate(wrapped_hook):
         _draw_centered(draw, hook_start_y + i * line_h, line, hook_font, CREAM, tracking=1)
 
     # Divider under hook
@@ -319,16 +384,21 @@ def _layout_educational(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) 
     draw.line([(CANVAS_SIZE // 2 - 60, div_y), (CANVAS_SIZE // 2 + 60, div_y)],
               fill=CREAM_DIM, width=2)
 
-    # Body bullets
+    # Body bullets (wrap each to safe width)
+    body_safe_w = CANVAS_SIZE - (2 * MARGIN) - 30
     sy = div_y + 30
     for line in spec.body:
-        _draw_centered(draw, sy, line, fonts["body"], CREAM, tracking=0)
-        sy += 38
+        for wrapped in _wrap_to_width(line, fonts["body"], body_safe_w):
+            _draw_centered(draw, sy, wrapped, fonts["body"], CREAM, tracking=0)
+            sy += 34
+        sy += 4  # gap between body items
 
-    # Explainer (optional)
+    # Explainer (optional, also wrapped)
     if spec.explainer:
-        sy += 12
-        _draw_centered(draw, sy, spec.explainer, fonts["explainer"], CREAM_DIM, tracking=0)
+        sy += 8
+        for wrapped in _wrap_to_width(spec.explainer, fonts["explainer"], body_safe_w):
+            _draw_centered(draw, sy, wrapped, fonts["explainer"], CREAM_DIM, tracking=0)
+            sy += 30
 
 
 def _layout_cta(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> None:
@@ -350,15 +420,20 @@ def _layout_cta(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> None:
     draw.line([(CANVAS_SIZE // 2 - 60, div_y), (CANVAS_SIZE // 2 + 60, div_y)],
               fill=GOLD, width=2)
 
-    # Body: typically 1–2 lines of where/when
+    # Body: typically 1–2 lines of where/when (wrap to safe width)
+    body_safe_w = CANVAS_SIZE - (2 * MARGIN) - 30
     sy = div_y + 28
     for line in spec.body:
-        _draw_centered(draw, sy, line, fonts["body"], CREAM, tracking=0)
-        sy += 38
+        for wrapped in _wrap_to_width(line, fonts["body"], body_safe_w):
+            _draw_centered(draw, sy, wrapped, fonts["body"], CREAM, tracking=0)
+            sy += 34
+        sy += 4
 
     if spec.explainer:
         sy += 8
-        _draw_centered(draw, sy, spec.explainer, fonts["explainer"], CREAM_DIM, tracking=0)
+        for wrapped in _wrap_to_width(spec.explainer, fonts["explainer"], body_safe_w):
+            _draw_centered(draw, sy, wrapped, fonts["explainer"], CREAM_DIM, tracking=0)
+            sy += 30
 
 
 def _layout_quote(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> None:
