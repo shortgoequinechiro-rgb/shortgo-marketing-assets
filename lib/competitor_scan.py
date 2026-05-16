@@ -100,7 +100,10 @@ def save_cache(brief: CompetitorBrief, path: Path = CACHE_PATH) -> None:
 # ---------------------------------------------------------------------------
 
 ANTHROPIC_URL = "https://api.anthropic.com/v1/messages"
-MODEL = "claude-sonnet-4-6"
+# Haiku is plenty smart for this synthesis task and:
+#  - has its own rate-limit pool (decouples from Sonnet drafting)
+#  - is ~3x cheaper per scan
+MODEL = "claude-haiku-4-5-20251001"
 
 SYSTEM_PROMPT = """You are a competitive intelligence analyst for an equine chiropractic business.
 
