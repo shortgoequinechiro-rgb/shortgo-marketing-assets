@@ -173,6 +173,31 @@ def _render_failures_text(failures: list[dict]) -> list[str]:
     return out
 
 
+GITHUB_OWNER = "shortgoequinechiro-rgb"
+GITHUB_REPO = "shortgo-marketing-assets"
+
+
+def _reject_url(post_id: str) -> str:
+    """Build a one-click GitHub-issue URL that the reject workflow picks up.
+
+    Charles is already authenticated to github.com — clicking this opens a
+    pre-filled new-issue form. Hitting "Submit new issue" fires the reject
+    workflow which deletes the FB scheduled post and clears the IG defer.
+    """
+    import urllib.parse as _u
+    title = _u.quote(f"REJECT {post_id}")
+    body = _u.quote(
+        f"Reject post `{post_id}`.\n\n"
+        f"Submit this issue to trigger the reject workflow. "
+        f"The workflow will delete the Facebook scheduled post and remove the Instagram defer entry, "
+        f"then close this issue automatically."
+    )
+    return (
+        f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/issues/new"
+        f"?title={title}&labels=reject&body={body}"
+    )
+
+
 def render_weekly_email_html(briefs: Iterable[PostBrief], failures: list[dict] | None = None) -> str:
     """Compose the recap email HTML."""
     briefs = list(briefs)
@@ -210,6 +235,10 @@ def render_weekly_email_html(briefs: Iterable[PostBrief], failures: list[dict] |
       <a href="{b.preview_url}" style="display: inline-block; margin-right: 12px; color: #1a5fb4; font: 500 14px -apple-system, sans-serif; text-decoration: none;">📱 Open feed preview</a>
       <a href="{b.image_url}" style="display: inline-block; color: #1a5fb4; font: 500 14px -apple-system, sans-serif; text-decoration: none;">🖼 Raw post image</a>
     </div>
+    <div style="margin-top: 14px;">
+      <a href="{_reject_url(b.post_id)}" style="display: inline-block; background: #c81d2f; color: #ffffff; padding: 10px 18px; border-radius: 6px; font: 700 14px -apple-system, sans-serif; text-decoration: none; letter-spacing: 0.02em;">🚫 REJECT THIS POST</a>
+      <span style="display: inline-block; margin-left: 12px; color: #8a8a8a; font: 400 12px -apple-system, sans-serif;">One click → opens a pre-filled GitHub issue. Hit "Submit" and the post is killed.</span>
+    </div>
     <div style="margin-top: 16px; padding: 16px; background: #f9f9f7; border-radius: 6px; font: 400 14px/1.55 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #2c2c2c; white-space: pre-wrap;">{caption_preview}</div>
   </td>
 </tr>
@@ -220,8 +249,9 @@ def render_weekly_email_html(briefs: Iterable[PostBrief], failures: list[dict] |
     if briefs:
         intro_body = (
             f"{intro_subject} <strong>pre-scheduled</strong> on Facebook and Instagram.<br>"
-            f"If you want to nix any of them, open any Claude session and say <em>\"kill the [date] post\"</em> or reference the Post ID.<br>"
-            f"No reply needed otherwise — they ship automatically."
+            f"To kill any post: hit the red <strong>🚫 REJECT THIS POST</strong> button below it. "
+            f"One click + Submit on the GitHub page and it's gone from both channels.<br>"
+            f"No action needed otherwise — they ship automatically."
         )
     else:
         intro_body = (

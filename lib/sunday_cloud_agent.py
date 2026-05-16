@@ -326,6 +326,18 @@ def main() -> int:
     (state_dir / "pending-ig.json").write_text(json.dumps(pending_ig, indent=2))
     print(f"Saved {len(pending_ig)} IG defers to state/pending-ig.json")
 
+    # Maintain a post_id -> fb_post_id index so the Reject workflow can delete
+    # without scanning every scheduled FB post.
+    scheduled_index_path = state_dir / "scheduled-fb-index.json"
+    try:
+        existing_index = json.loads(scheduled_index_path.read_text()) if scheduled_index_path.exists() else {}
+    except Exception:
+        existing_index = {}
+    for p in prepared:
+        if p.get("fb_post_id"):
+            existing_index[p["post_id"]] = p["fb_post_id"]
+    scheduled_index_path.write_text(json.dumps(existing_index, indent=2))
+
     # 5. Email recap
     from notify_weekly_email import PostBrief, send_weekly_recap, NotifyCreds
     tz_chi = ZoneInfo("America/Chicago")

@@ -1,0 +1,72 @@
+name: Reject Post via Issue
+
+on:
+  issues:
+    types: [opened, labeled]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  reject:
+    # Only fire for issues that have the `reject` label
+    if: >
+      contains(github.event.issue.labels.*.name, 'reject') ||
+      github.event.label.name == 'reject'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run reject handler
+        id: reject
+        env:
+          META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+          META_PAGE_ID:           ${{ secrets.META_PAGE_ID }}
+          META_IG_USER_ID:        ${{ secrets.META_IG_USER_ID }}
+          ISSUE_TITLE:            ${{ github.event.issue.title }}
+        run: |
+          cd "${GITHUB_WORKSPACE}"
+          python lib/reject_post.py
+          echo "comment<<__EOF__" >> "$GITHUB_OUTPUT"
+          cat /tmp/reject_comment.md >> "$GITHUB_OUTPUT"
+          echo "__EOF__" >> "$GITHUB_OUTPUT"
+
+      - name: Commit updated IG defer queue
+        run: |
+          cd "${GITHUB_WORKSPACE}"
+          git config user.name "Short Go Agent"
+          git config user.email "shortgoequinechiro@gmail.com"
+          git add state/
+          if git diff --staged --quiet; then
+            echo "No state changes."
+          else
+            git commit -m "Reject ${{ github.event.issue.number }}: ${{ github.event.issue.title }}"
+            git push
+          fi
+
+      - name: Comment on issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `${{ steps.reject.outputs.comment }}`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed',
+              state_reason: 'completed',
+            });
