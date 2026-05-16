@@ -318,9 +318,9 @@ def compose_post(spec: PostSpec, output_path: Path) -> Path:
     # 2. Load fonts at standard sizes
     # Cornermark / service tags bumped slightly so they hold up across all backgrounds.
     fonts = {
-        "mark":     _font(spec.inter_path,    22, 700),
-        "mark_sub": _font(spec.inter_path,    15, 500),
-        "tag":      _font(spec.inter_path,    15, 600),
+        "mark":     _font(spec.inter_path,    23, 900),    # heavier weight so cornermark reads on every background
+        "mark_sub": _font(spec.inter_path,    16, 700),    # bolder + slightly larger subtitle
+        "tag":      _font(spec.inter_path,    16, 800),    # bolder service tags top-right
         "hook_big": _font(spec.playfair_path, 96, 900),
         "hook_med": _font(spec.playfair_path, 72, 900),
         "body":     _font(spec.inter_path,    26, 700),    # bumped to SemiBold/Bold for legibility
@@ -476,20 +476,25 @@ def _layout_quote(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> Non
     Quote / philosophy post: a large serif quote in italics (rendered as plain serif),
     one-line attribution, no body bullets. Used for brand-voice posts.
     """
-    # Combine hook lines into wrapped quote
+    quote_safe_w = CANVAS_SIZE - (2 * MARGIN) - 30
     quote_font = fonts["hook_med"]
-    line_h = 86
-    total_h = line_h * len(spec.hook)
+
+    # Bracket the full quote with open/close marks, then word-wrap to safe width
+    raw_text = " ".join(spec.hook)
+    full = f'"{raw_text}"'
+    wrapped = _wrap_to_width(full, quote_font, quote_safe_w, tracking=1)
+
+    # If wrapping ballooned to many lines, shrink the font so it stays balanced
+    while len(wrapped) > 4 and quote_font.size > 48:
+        quote_font = _font(spec.playfair_path, quote_font.size - 6, 900)
+        wrapped = _wrap_to_width(full, quote_font, quote_safe_w, tracking=1)
+
+    line_h = max(54, int(quote_font.size * 1.15))
+    total_h = line_h * len(wrapped)
     start_y = 540 - (total_h // 2) + (line_h // 2)
 
-    # Open and close quote marks bracket the text
-    for i, line in enumerate(spec.hook):
-        display = f'"{line}"' if i == 0 and len(spec.hook) == 1 else line
-        if i == 0 and len(spec.hook) > 1:
-            display = f'"{line}'
-        if i == len(spec.hook) - 1 and len(spec.hook) > 1:
-            display = f'{line}"'
-        _draw_centered(draw, start_y + i * line_h, display, quote_font, CREAM, tracking=1)
+    for i, line in enumerate(wrapped):
+        _draw_centered(draw, start_y + i * line_h, line, quote_font, CREAM, tracking=1)
 
     # Attribution line under quote (uses explainer slot, wrapped to safe width)
     if spec.explainer:
