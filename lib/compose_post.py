@@ -323,8 +323,8 @@ def compose_post(spec: PostSpec, output_path: Path) -> Path:
         "tag":      _font(spec.inter_path,    15, 600),
         "hook_big": _font(spec.playfair_path, 96, 900),
         "hook_med": _font(spec.playfair_path, 72, 900),
-        "body":     _font(spec.inter_path,    26, 500),
-        "explainer":_font(spec.inter_path,    22, 400),
+        "body":     _font(spec.inter_path,    26, 700),    # bumped to SemiBold/Bold for legibility
+        "explainer":_font(spec.inter_path,    24, 700),    # bold + larger so small text reads cleanly
         "phone":    _font(spec.playfair_path, 56, 900),
         "web":      _font(spec.inter_path,    24, 600),
     }
@@ -384,21 +384,51 @@ def _layout_educational(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) 
     draw.line([(CANVAS_SIZE // 2 - 60, div_y), (CANVAS_SIZE // 2 + 60, div_y)],
               fill=CREAM_DIM, width=2)
 
-    # Body bullets (wrap each to safe width)
+    # Body bullets (wrap each to safe width). Reserve room for the phone
+    # block at the bottom — phone is centered at y = CANVAS_SIZE - 130, so
+    # body content must stop above y ~ 870.
     body_safe_w = CANVAS_SIZE - (2 * MARGIN) - 30
+    bottom_limit = CANVAS_SIZE - 200  # 880, leaves clearance for phone + web/CTA
+
+    # Pre-compute total height needed so we can shrink font if it would overflow.
+    body_font = fonts["body"]
+    explainer_font = fonts["explainer"]
+
+    def _measure(b_font, e_font, line_h, gap, exp_line_h):
+        total = 0
+        for line in spec.body:
+            wrapped_lines = _wrap_to_width(line, b_font, body_safe_w)
+            total += line_h * len(wrapped_lines) + gap
+        if spec.explainer:
+            total += 8
+            total += exp_line_h * len(_wrap_to_width(spec.explainer, e_font, body_safe_w))
+        return total
+
+    line_h, gap, exp_line_h = 34, 4, 32
+    available = bottom_limit - (div_y + 30)
+    needed = _measure(body_font, explainer_font, line_h, gap, exp_line_h)
+    if needed > available:
+        # Drop a size and tighten spacing
+        body_font = _font(spec.inter_path, 22, 700)
+        explainer_font = _font(spec.inter_path, 21, 700)
+        line_h, gap, exp_line_h = 30, 2, 28
+
     sy = div_y + 30
     for line in spec.body:
-        for wrapped in _wrap_to_width(line, fonts["body"], body_safe_w):
-            _draw_centered(draw, sy, wrapped, fonts["body"], CREAM, tracking=0)
-            sy += 34
-        sy += 4  # gap between body items
+        for wrapped in _wrap_to_width(line, body_font, body_safe_w):
+            if sy > bottom_limit - line_h:
+                break
+            _draw_centered(draw, sy, wrapped, body_font, CREAM, tracking=0)
+            sy += line_h
+        sy += gap
 
-    # Explainer (optional, also wrapped)
-    if spec.explainer:
+    if spec.explainer and sy + exp_line_h < bottom_limit:
         sy += 8
-        for wrapped in _wrap_to_width(spec.explainer, fonts["explainer"], body_safe_w):
-            _draw_centered(draw, sy, wrapped, fonts["explainer"], CREAM_DIM, tracking=0)
-            sy += 30
+        for wrapped in _wrap_to_width(spec.explainer, explainer_font, body_safe_w):
+            if sy > bottom_limit - exp_line_h:
+                break
+            _draw_centered(draw, sy, wrapped, explainer_font, CREAM, tracking=0)
+            sy += exp_line_h
 
 
 def _layout_cta(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> None:
@@ -420,19 +450,24 @@ def _layout_cta(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> None:
     draw.line([(CANVAS_SIZE // 2 - 60, div_y), (CANVAS_SIZE // 2 + 60, div_y)],
               fill=GOLD, width=2)
 
-    # Body: typically 1–2 lines of where/when (wrap to safe width)
+    # Body: typically 1–2 lines of where/when (wrap to safe width, bounded by phone block)
     body_safe_w = CANVAS_SIZE - (2 * MARGIN) - 30
+    bottom_limit = CANVAS_SIZE - 200
     sy = div_y + 28
     for line in spec.body:
         for wrapped in _wrap_to_width(line, fonts["body"], body_safe_w):
+            if sy > bottom_limit - 34:
+                break
             _draw_centered(draw, sy, wrapped, fonts["body"], CREAM, tracking=0)
             sy += 34
         sy += 4
 
-    if spec.explainer:
+    if spec.explainer and sy + 30 < bottom_limit:
         sy += 8
         for wrapped in _wrap_to_width(spec.explainer, fonts["explainer"], body_safe_w):
-            _draw_centered(draw, sy, wrapped, fonts["explainer"], CREAM_DIM, tracking=0)
+            if sy > bottom_limit - 30:
+                break
+            _draw_centered(draw, sy, wrapped, fonts["explainer"], CREAM, tracking=0)
             sy += 30
 
 
@@ -456,10 +491,14 @@ def _layout_quote(draw: ImageDraw.ImageDraw, fonts: dict, spec: PostSpec) -> Non
             display = f'{line}"'
         _draw_centered(draw, start_y + i * line_h, display, quote_font, CREAM, tracking=1)
 
-    # Attribution line under quote (uses explainer slot)
+    # Attribution line under quote (uses explainer slot, wrapped to safe width)
     if spec.explainer:
+        attr_safe_w = CANVAS_SIZE - (2 * MARGIN) - 30
         attr_y = start_y + total_h + 30
-        _draw_centered(draw, attr_y, f"— {spec.explainer}", fonts["explainer"], CREAM_DIM, tracking=2)
+        wrapped = _wrap_to_width(f"— {spec.explainer}", fonts["explainer"], attr_safe_w, tracking=2)
+        for line in wrapped:
+            _draw_centered(draw, attr_y, line, fonts["explainer"], CREAM, tracking=2)
+            attr_y += 32
 
 
 # ---------------------------------------------------------------------------
