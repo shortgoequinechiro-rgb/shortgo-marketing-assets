@@ -158,9 +158,28 @@ def schedule_facebook_post(
     if delta > 60 * 60 * 24 * 30 * 6:
         raise ValueError("scheduled_at cannot be more than 6 months out.")
 
-    resp = _post_graph(f"/{creds.page_id}/photos", {
+    # Two-step scheduling so the post shows in Meta Business Suite Planner.
+    #
+    # Single-step /photos scheduling DOES schedule a real post, but MBS's
+    # Planner UI silently excludes those — Charles couldn't see them and we
+    # had to dig via API to verify. The /feed path with attached_media surfaces
+    # the post in MBS like a manually-scheduled one.
+    #
+    # Step 1: upload the photo as unpublished media. No scheduled_publish_time
+    # here — that goes on the feed post in step 2. We get back a media_fbid.
+    upload = _post_graph(f"/{creds.page_id}/photos", {
         "url": image_url,
-        "caption": caption,
+        "published": "false",
+        "access_token": creds.page_access_token,
+    })
+    media_fbid = upload.get("id")
+    if not media_fbid:
+        raise MetaAPIError(f"Photo upload returned no id: {upload}")
+
+    # Step 2: schedule the feed post that references the uploaded photo.
+    feed = _post_graph(f"/{creds.page_id}/feed", {
+        "message": caption,
+        "attached_media": json.dumps([{"media_fbid": media_fbid}]),
         "published": "false",
         "scheduled_publish_time": str(unix_ts),
         "access_token": creds.page_access_token,
@@ -169,10 +188,12 @@ def schedule_facebook_post(
         "platform": "facebook",
         "page_id": creds.page_id,
         "page_name": creds.page_name,
-        "post_id": resp.get("id") or resp.get("post_id"),
+        "post_id": feed.get("id") or feed.get("post_id"),
+        "media_fbid": media_fbid,
         "scheduled_for_unix": unix_ts,
         "scheduled_for_iso": scheduled_at.isoformat(),
-        "raw_response": resp,
+        "raw_response": feed,
+        "upload_response": upload,
     }
 
 
