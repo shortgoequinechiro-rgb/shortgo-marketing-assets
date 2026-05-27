@@ -1,13 +1,5 @@
 [
   {
-    "post_id": "2026-05-27-edu-short-striding-front",
-    "scheduled_at": "2026-05-27T14:00:00-05:00",
-    "image_url": "https://raw.githubusercontent.com/shortgoequinechiro-rgb/shortgo-marketing-assets/main/posts/2026-05-27/2026-05-27-edu-short-striding-front.png",
-    "caption": "Everybody chases the hind end. The front end starts the movement.\n\nWhen a horse short-strides up front, riders assume it's a shoulder, a tendon, or an old injury. Sometimes it is. But a surprising number of cases Dr. Leo sees in North Texas trace back to restriction at the withers and the first few ribs \u2014 the area that controls how far forward that front leg reaches.\n\nThree things that point there before you ever call the vet:\n\u2014 One shoulder consistently lands shorter, but no heat, no swelling\n\u2014 Head carriage shifts slightly to one side at the lope\n\u2014 She resists collection or feels \"sticky\" picking up one rein\n\nNone of those are dramatic. None of them show up on an X-ray. But they all affect your run.\n\nDr. Leo is a cAVCA-certified equine chiropractor serving DFW and North Texas. Book now \u2014 shortgochiro.com or (406) 799-3369.",
-    "last_error": "HTTP 400 on POST /17841480145217178/media_publish: {'error': {'message': 'Media ID is not available', 'type': 'OAuthException', 'code': 9007, 'error_subcode': 2207027, 'is_transient': False, 'error_user_title': 'Cannot Publish', 'error_user_msg': 'The media is not ready for publishing, please wait for a moment', 'fbtrace_id': 'AeZNU1kUIY9VvaYIDHhIEqb'}}",
-    "last_attempted_at": "2026-05-27T19:27:24.444375+00:00"
-  },
-  {
     "post_id": "2026-05-29-quote-short-go-ready",
     "scheduled_at": "2026-05-29T14:00:00-05:00",
     "image_url": "https://raw.githubusercontent.com/shortgoequinechiro-rgb/shortgo-marketing-assets/main/posts/2026-05-29/2026-05-29-quote-short-go-ready.png",
