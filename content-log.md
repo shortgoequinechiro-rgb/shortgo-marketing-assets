@@ -15,7 +15,20 @@ Format: `YYYY-MM-DD | channel | post-type | hook one-liner | bucket`
 
 Buckets: Educational, Proof, Personal, Offer
 
+**Backfilled 2026-05-28 from cloud state (`state/scheduled-fb-index.json` + `state/pending-ig.json` + GBP merchant view).** Going forward, the Sunday cloud agent should append each successful FB schedule / IG queue here automatically — see "Wire mirror-on-post" punchlist item.
+
 <!-- add lines below as you post -->
+2026-05-20 | FB + IG | Static | "Rest day vs off day — not the same thing" (`2026-05-20-edu-rest-day-vs-off-day`) | Educational
+2026-05-22 | FB + IG | Static | "The gut feeling rider" (`2026-05-22-quote-gut-feeling-rider`) | Proof (quote-format)
+2026-05-24 | FB + IG | Static | "Summer schedule — DFW + Montana" (`2026-05-24-cta-summer-schedule-dfwmt`) | Offer
+2026-05-27 | FB + IG | Static | "Short-striding up front" (`2026-05-27-edu-short-striding-front`) | Educational
+2026-05-27 | GBP | Update | "Summer haul season — three things to fix BEFORE the trailer" (Cowork-posted via merchant view; text-only) | Educational
+2026-05-29 | FB + IG | Static | "Short Go ready" (`2026-05-29-quote-short-go-ready`) — SCHEDULED, fires 2026-05-29 14:00 CDT | Proof (quote-format)
+2026-05-31 | FB + IG | Static | "Summer maintenance" (`2026-05-31-cta-summer-maintenance`) — SCHEDULED, fires 2026-05-31 14:00 CDT | Offer
+
+Earlier batches (pre 5-20):
+- Cloud agent verified end-to-end 2026-05-15 (test runs scheduled then deleted — not counted as POSTED)
+- `posts/manual-batch/` holds the hand-staged content that appeared in GBP carousel as "Recovery Starts Here" + "From Stiff to Striding" (May 14 / May 19 dates per GBP). Specific filenames not enumerated — review manual-batch directory if angle-overlap is a concern
 
 ---
 
@@ -71,6 +84,21 @@ Format: `YYYY-MM-DD | post-type | hook one-liner | bucket`
 2026-05-10 | Reel   | "Tuesday Frisco. Thursday Aubrey. Saturday Weatherford." | Offer (DFW route map, scarcity CTA)
 2026-05-10 | Static | "How often, actually? A maintenance map for a competing horse" | Educational (cadence carousel, retention + SEO long-tail)
 2026-05-10 | Story  | "Mid-June Montana route — who's running where?" | Personal/Offer (MT season tease, question + poll lead capture)
+2026-05-17 | Reel   | "Three weekends in. Look at her again." | Educational (summer-haul wear, pelvis/SI/poll, weekly-cadence pitch)
+2026-05-17 | Reel   | "Owner thought she'd just gone barn-sour" | Proof (before/after, won't-load-to-trailer fresh symptom, poll release)
+2026-05-17 | Reel   | "We come to you. Tell us where 'you' is." | Offer (rider-pulls-us-in CTA, no fabricated route, mobile gap claim)
+2026-05-17 | Static | "You don't haul a sore horse to fix a sore horse" | Educational/Offer (mobile-vs-clinic carousel, specialist positioning)
+2026-05-17 | Story  | "Where are you hauling in the next 4 weekends?" | Offer-leaning (question sticker + quiz sticker, DM lead capture)
+2026-05-20 | Reel   | "Cowtown's 26 days out. If you're going — here's the window." | Educational (prep-window timeline, Dr. Leo on mic, real public TX anchor)
+2026-05-20 | Reel   | "She kept dropping her shoulder going into the second." | Proof (fresh barrel symptom, inside-shoulder/4th rib before-after)
+2026-05-20 | Reel   | "There's a part of your horse a clinic appointment literally can't see." | Educational (mobile-vs-clinic gap-claim, diagnostic framing)
+2026-05-20 | Static | "4 weeks out. Don't book the adjustment for Friday." | Educational (prep-window carousel, lands on DFW DM CTA)
+2026-05-20 | Story  | "What are you pointing at in June?" | Offer-leaning (quiz sticker — Cowtown/jackpot/futurity/no-entry, DM lead capture)
+2026-05-24 | Reel   | "Before you blame the saddle — check these three spots" | Educational (rider self-check, poll/withers/SI, owner-empowerment gap claim)
+2026-05-24 | Reel   | "She wouldn't pick up her right lead. Every. Single. Ride." | Proof (before/after, thoracic, fresh lead-refusal symptom)
+2026-05-24 | Reel   | "June's filling up. Here's how we figure out where Dr. Leo goes Tuesday." | Personal/Offer (BTS route process, rider-pulls-us-in CTA, no fabricated route)
+2026-05-24 | Static | "Hauling in June? Read this before you book the appointment." | Educational (4-week prep timeline carousel, June DM CTA)
+2026-05-24 | Story  | "What's actually bugging you about your horse right now?" | Offer-leaning (quiz sticker — lead/first-barrel/turning/"seems fine", symptom-intent capture)
 
 ## REJECTED
 2026-05-15 | REJECTED | educational | 'WATCH HIS THIRD BARREL.' | notes: I won't be working coppell + frisco this Saturday.  Let's not add locations unless I tell you
