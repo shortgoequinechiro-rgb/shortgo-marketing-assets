@@ -13,7 +13,7 @@ GitHub Actions (or any cloud cron):
     7. Schedule FB posts via Meta Graph API (native scheduling)
     8. Save IG posts to state/pending-ig.json for hourly cron to fire
     9. Send weekly recap email via Resend
-    10. Append PROPOSED entries to content-log.md
+    10. Append PROPOSED + POSTED entries to content-log.md
     11. git push state changes
 
 All credentials come from environment variables (set as GitHub Secrets):
@@ -408,19 +408,63 @@ def main() -> int:
     email_resp = send_weekly_recap(briefs, creds=notify_creds, competitor=competitor_summary)
     print(f"Recap email sent: {email_resp}")
 
-    # 6. Append PROPOSED entries to content-log
+    # 6. Append PROPOSED + POSTED entries to content-log.md
+    #
+    # PROPOSED captures every drafted post this run (insertion at top of section,
+    # newest-first to match historical pattern).
+    # POSTED captures only posts that successfully FB-scheduled — the cloud agent
+    # reads the POSTED section on its next run to avoid repeating angles that
+    # have already gone out. Writing this here (not at posting time) closes the
+    # observability loop without needing a separate cross-repo sync step. The
+    # workflow's final commit step picks up content-log.md alongside state/.
     today_str = datetime.now(tz_chi).date().isoformat()
-    log_lines = []
+    bucket_map = {
+        "educational": "Educational",
+        "cta": "Offer",
+        "quote": "Proof (quote-format)",
+    }
+    channel = "FB + IG" if meta_creds.ig_user_id else "FB"
+    proposed_lines: list[str] = []
+    posted_lines: list[str] = []
     for p in prepared:
         hook = " ".join(p["hook"])[:80]
-        log_lines.append(f"{today_str} | Static | {p['post_type']} | {hook} | {p['scheduled_at']}")
-    log_block = "\n".join(log_lines)
-    existing = cl_path.read_text()
-    if "## PROPOSED" in existing:
-        existing = existing.replace("## PROPOSED\n", "## PROPOSED\n" + log_block + "\n", 1)
-    else:
-        existing = existing.rstrip() + "\n\n## PROPOSED\n" + log_block + "\n"
-    cl_path.write_text(existing)
+        proposed_lines.append(f"{today_str} | Static | {p['post_type']} | {hook} | {p['scheduled_at']}")
+        if p.get("fb_post_id"):
+            bucket = bucket_map.get(p["post_type"], p["post_type"].title())
+            try:
+                sched_dt = datetime.fromisoformat(p["scheduled_at"]).astimezone(tz_chi)
+                sched_date = sched_dt.date().isoformat()
+                sched_human = sched_dt.strftime("%Y-%m-%d %H:%M %Z")
+            except Exception:
+                sched_date = today_str
+                sched_human = p["scheduled_at"]
+            posted_lines.append(
+                f"{sched_date} | {channel} | Static | \"{hook}\" (`{p['post_id']}`) — SCHEDULED, fires {sched_human} | {bucket}"
+            )
+
+    try:
+        existing = cl_path.read_text()
+        if proposed_lines:
+            proposed_block = "\n".join(proposed_lines)
+            if "## PROPOSED" in existing:
+                existing = existing.replace("## PROPOSED\n", "## PROPOSED\n" + proposed_block + "\n", 1)
+            else:
+                existing = existing.rstrip() + "\n\n## PROPOSED\n" + proposed_block + "\n"
+        if posted_lines:
+            posted_block = "\n".join(posted_lines)
+            marker = "<!-- add lines below as you post -->"
+            if marker in existing:
+                existing = existing.replace(marker, marker + "\n" + posted_block, 1)
+            elif "## POSTED" in existing:
+                existing = existing.replace("## POSTED", "## POSTED\n" + posted_block + "\n", 1)
+            # else: leave POSTED unwritten rather than crash; the run still
+            # succeeded as far as Meta is concerned.
+        cl_path.write_text(existing)
+        print(f"content-log.md updated: +{len(proposed_lines)} PROPOSED, +{len(posted_lines)} POSTED")
+    except Exception as e:
+        # Don't let log-writing failure poison the rest of the run. The posts
+        # are already scheduled in Meta and the recap email already went out.
+        print(f"WARNING: content-log.md update FAILED ({e}); posts still scheduled.", file=sys.stderr)
 
     print("Sunday run complete.")
     return 0
