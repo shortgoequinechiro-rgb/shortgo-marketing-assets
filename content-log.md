@@ -18,6 +18,9 @@ Buckets: Educational, Proof, Personal, Offer
 **Backfilled 2026-05-28 from cloud state (`state/scheduled-fb-index.json` + `state/pending-ig.json` + GBP merchant view).** Going forward, the Sunday cloud agent should append each successful FB schedule / IG queue here automatically — see "Wire mirror-on-post" punchlist item.
 
 <!-- add lines below as you post -->
+2026-06-10 | FB + IG | Static | "YOUR HORSE ISN'T BLOWING THE LEAD. HE'S TELLING YOU SOMETHING HURTS." (`2026-06-10-edu-lead-change-loin`) — SCHEDULED, fires 2026-06-10 14:00 CDT | Educational
+2026-06-12 | FB + IG | Static | ""HE DOESN'T DREAD THE BOX ANYMORE." THAT TOLD ME EVERYTHING." (`2026-06-12-quote-doesnt-dread-the-box`) — SCHEDULED, fires 2026-06-12 14:00 CDT | Proof (quote-format)
+2026-06-14 | FB + IG | Static | "MID-JUNE. YOUR HORSE HAS BEEN RUNNING ALL SUMMER. LET'S CHECK HIM." (`2026-06-14-cta-midsummer-maintenance`) — SCHEDULED, fires 2026-06-14 14:00 CDT | Offer
 2026-06-03 | FB + IG | Static | "YOUR ROPE HORSE ISN'T BEING LAZY." (`2026-06-03-edu-rope-horse-resistant-shoulder`) — SCHEDULED, fires 2026-06-03 14:00 CDT | Educational
 2026-06-05 | FB + IG | Static | ""SHE RAN LIKE SHE WASN'T SCARED OF THE THIRD BARREL ANYMORE."" (`2026-06-05-quote-north-texas-barrel`) — SCHEDULED, fires 2026-06-05 14:00 CDT | Proof (quote-format)
 2026-06-07 | FB + IG | Static | "SUMMER RUNS ARE HERE. IS YOUR HORSE READY?" (`2026-06-07-cta-summer-tune-up`) — SCHEDULED, fires 2026-06-07 14:00 CDT | Offer
