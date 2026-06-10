@@ -9,8 +9,11 @@ Also piggybacks a daily refresh of state/post-metrics.json (FB/IG engagement
 via fetch_post_metrics.py) so the weekly marketing agent can read real
 performance data — it has no access to Meta credentials itself.
 
-Designed to run in GitHub Actions on an hourly cron. Credentials come from
-environment variables (META_PAGE_ACCESS_TOKEN, META_IG_USER_ID).
+Designed to run in GitHub Actions on an hourly cron — BUT GitHub throttles
+free-tier scheduled workflows to roughly every 2–4 hours in practice, so the
+late-fire window is 4 hours (a post fires late rather than being silently
+dropped). Credentials come from environment variables
+(META_PAGE_ACCESS_TOKEN, META_IG_USER_ID).
 """
 from __future__ import annotations
 
@@ -28,6 +31,7 @@ REPO_ROOT = _THIS.parent.parent
 STATE_FILE = REPO_ROOT / "state" / "pending-ig.json"
 METRICS_FILE = REPO_ROOT / "state" / "post-metrics.json"
 FIRE_WINDOW = timedelta(minutes=8)
+LATE_WINDOW_SECONDS = 4 * 3600  # was 1h; Actions cron throttling made that risky
 METRICS_MAX_AGE = timedelta(hours=20)
 
 
@@ -90,8 +94,8 @@ def main() -> int:
     for entry in pending:
         scheduled = _iso(entry["scheduled_at"])
         delta = (scheduled - now).total_seconds()
-        # Fire if scheduled within window (past 1 hour OR up to 8 min in future)
-        if delta <= FIRE_WINDOW.total_seconds() and delta >= -3600:
+        # Fire if scheduled within window (up to 4 hours past OR up to 8 min in future)
+        if delta <= FIRE_WINDOW.total_seconds() and delta >= -LATE_WINDOW_SECONDS:
             print(f"Firing IG for {entry['post_id']} (scheduled_at={entry['scheduled_at']}, delta={int(delta)}s)...")
             try:
                 resp = post_to_instagram_now(entry["image_url"], entry["caption"], creds=creds)
@@ -100,12 +104,12 @@ def main() -> int:
                 # Done — don't keep in queue
             except MetaAPIError as e:
                 print(f"  FAIL: {e}", file=sys.stderr)
-                # Keep in queue for retry next hour
+                # Keep in queue for retry next run
                 entry["last_error"] = str(e)
                 entry["last_attempted_at"] = now.isoformat()
                 remaining.append(entry)
-        elif delta < -3600:
-            # Too old, drop with a note (1 hour past scheduled time and never fired)
+        elif delta < -LATE_WINDOW_SECONDS:
+            # Too old, drop with a note (4+ hours past scheduled time and never fired)
             print(f"DROPPING {entry['post_id']} — scheduled time is {int(-delta/60)} min in the past, never fired.")
         else:
             # Not yet due
