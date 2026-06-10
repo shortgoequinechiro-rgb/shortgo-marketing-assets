@@ -5,6 +5,10 @@ Reads state/pending-ig.json (a list of deferred IG posts), fires any whose
 scheduled time has arrived (within an 8-minute window past or imminent),
 and writes back the updated state.
 
+Also piggybacks a daily refresh of state/post-metrics.json (FB/IG engagement
+via fetch_post_metrics.py) so the weekly marketing agent can read real
+performance data — it has no access to Meta credentials itself.
+
 Designed to run in GitHub Actions on an hourly cron. Credentials come from
 environment variables (META_PAGE_ACCESS_TOKEN, META_IG_USER_ID).
 """
@@ -22,21 +26,47 @@ sys.path.insert(0, str(_THIS.parent))
 # Find repo root from this file's location
 REPO_ROOT = _THIS.parent.parent
 STATE_FILE = REPO_ROOT / "state" / "pending-ig.json"
+METRICS_FILE = REPO_ROOT / "state" / "post-metrics.json"
 FIRE_WINDOW = timedelta(minutes=8)
+METRICS_MAX_AGE = timedelta(hours=20)
 
 
 def _iso(dt_str: str) -> datetime:
     return datetime.fromisoformat(dt_str.replace("Z", "+00:00"))
 
 
+def _refresh_metrics_if_stale(now: datetime) -> None:
+    """Refresh state/post-metrics.json at most once per ~day.
+
+    Rides this hourly job because the deploy PAT lacks `workflow` scope to
+    create a dedicated metrics workflow. Never fatal.
+    """
+    try:
+        stale = True
+        if METRICS_FILE.exists():
+            generated = _iso(json.loads(METRICS_FILE.read_text())["generated_at"])
+            stale = (now - generated) > METRICS_MAX_AGE
+        if stale:
+            import fetch_post_metrics
+            fetch_post_metrics.main()
+        else:
+            print("Post metrics fresh — skipping refresh.")
+    except Exception as e:  # noqa: BLE001 — metrics must never break IG firing
+        print(f"Metrics refresh skipped: {e}", file=sys.stderr)
+
+
 def main() -> int:
+    now = datetime.now(timezone.utc)
+
     if not STATE_FILE.exists():
         print(f"No state file at {STATE_FILE} — nothing to fire.")
+        _refresh_metrics_if_stale(now)
         return 0
 
     pending = json.loads(STATE_FILE.read_text())
     if not pending:
         print("Pending IG queue is empty.")
+        _refresh_metrics_if_stale(now)
         return 0
 
     page_token = os.environ.get("META_PAGE_ACCESS_TOKEN")
@@ -54,7 +84,6 @@ def main() -> int:
         ig_user_id=ig_user_id,
     )
 
-    now = datetime.now(timezone.utc)
     remaining: list[dict] = []
     fired_count = 0
 
@@ -85,6 +114,8 @@ def main() -> int:
     STATE_FILE.parent.mkdir(exist_ok=True)
     STATE_FILE.write_text(json.dumps(remaining, indent=2))
     print(f"Fired {fired_count}. {len(remaining)} still queued.")
+
+    _refresh_metrics_if_stale(now)
     return 0
 
 
