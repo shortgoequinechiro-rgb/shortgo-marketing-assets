@@ -1,48 +1,43 @@
 {
-  "scanned_at": "2026-06-07T11:21:09.192404+00:00",
+  "scanned_at": "2026-06-14T11:40:10.004319+00:00",
   "recent_topics": [
-    "Performance horse mobility and range of motion optimization",
-    "Post-haul and competition recovery protocols",
-    "Kissing spine syndrome prevention and treatment",
-    "Saddle fit compensation and spinal alignment",
-    "Rodeo event-specific lameness (barrel racing, team roping, bucking stock)",
-    "Neck and poll tension release in sport horses",
-    "VOM (veterinary orthopedic manipulation) for bucking stock performance",
-    "Pre-event muscle conditioning and stretching exercises",
-    "Compensation patterns from asymmetry and training imbalance"
+    "Performance restoration and gait improvement post-adjustment",
+    "Lameness diagnosis and subtle mobility issues",
+    "Compensation patterns and injury prevention",
+    "Rodeo and working horse performance maintenance",
+    "Post-haul recovery and conditioning for competition",
+    "Behavioral changes under saddle (resistance, head-bobbing, tail swishing)",
+    "Saddle fit and tack adjustment for performance horses",
+    "Multimodal care: chiropractic + farrier + trainer coordination"
   ],
   "common_hook_patterns": [
-    "Before/after gait video comparison showing improved stride",
-    "\"3 signs your horse needs an adjustment\" carousel posts",
-    "\"Did you know your saddle position can cause...\" educational callouts",
-    "Demonstration reels of specific release techniques (shoulder stretch, neck release)",
-    "FAQ carousel addressing buyer hesitation (\"Will adjustment hurt?\", \"How long does it last?\")",
-    "Rodeo-circuit narrative: \"helping your horse perform when it matters\"",
-    "Problem-solving hook: \"Your horse is [behavioral issue]\u2014here's why\"",
-    "Stretching exercise tutorials tagged #HorseWellness #PerformanceHorse"
+    "\"Watch this horse's immediate response...\" (ASMR/reaction-based)",
+    "\"It's not lameness, it's...\" (problem reframe pattern)",
+    "\"3 signs your horse needs an adjustment\" (numbered lists)",
+    "Before/after gait or posture demonstrations",
+    "\"This surprised even me...\" (practitioner credibility via surprise)",
+    "Client testimonials: visible improvement in stride/behavior",
+    "Drum up demand: \"You'll see results within days\""
   ],
   "dominant_visual_styles": [
-    "Hands-on adjustment close-ups showing palpation and technique detail",
-    "Horse trotting before/after footage with slow-motion gait analysis",
-    "Practitioner in barn setting with horse in cross-ties, rural/working backdrop",
-    "Reel-format shoulder/neck release demos with music and text overlay",
-    "Testimonial carousel with rider/owner quotes and horse reaction shots",
-    "Anatomical diagram overlays on horse photos (labeling vertebrae, joints)"
+    "Close-up clinical footage of adjustment technique or palpation",
+    "Side-by-side or before/after gait video (trotting horse showing stride improvement)",
+    "Practitioner hands-on detail shots (palpation, vertebra manipulation)",
+    "Horse relaxation reaction during/after adjustment (head drop, deep exhale)",
+    "Horse-and-practitioner action shots at the barn (mobile/field setting)",
+    "Text overlay on video with educational anatomy callouts"
   ],
-  "raw_summary": "Equine chiropractic content across competitors emphasizes performance metrics\u2014particularly gait improvement, rodeo event readiness, and post-haul recovery. Most active practitioners (Sport Horse Chiropractic, Dodge Family and Animal Chiropractic, Peach Creek Animal Chiropractic, Heart and Hoof Chiropractic, Elite Animal Chiropractic) focus their messaging on: (1) immediate visible results (before/after gait video, horse relaxation cues), (2) rodeo/barrel racing/roping specialization (distinct from dressage/English), (3) problem-solving narrative (\"Your horse is resistant\u2014here's the spinal reason\"), and (4) educational stretching/conditioning content designed to position the practitioner as a performance coach, not just a treater. Bodyworkers in Texas/Montana emphasize Masterson Method and myofascial release, positioning as complementary to chiropractic. VOM (veterinary orthopedic manipulation) is emerging as a differentiator for bucking stock work. Hook patterns lean heavily on FAQ carousels, anatomy-labeled educational posts, and reel-format technique demos. Visually, competitors favor barn/cross-tie settings, horse-and-rider portraits, and close-ups of hands-on work\u2014creating a rural-luxury, professional-yet-accessible aesthetic.",
+  "raw_summary": "Equine chiropractic marketing across the region centers on performance restoration and injury prevention for working/rodeo horses. Dominant competitors\u2014including Dodge Family & Animal Chiropractic (Tyler, TX), Heart and Hoof Chiropractic (North Texas), Dr. Cody Taylor (Montana), and national players like Sport Horse Chiropractic\u2014emphasize gait improvement, behavioral change relief, and coordination with farriers/trainers. Social media hooks leverage surprise/ASMR-style reaction footage, problem reframing (\"It's not X, it's Y\"), and numbered diagnostic signs. Visual content skews toward clinical close-ups of adjustments, before/after trotting videos, and visible horse relaxation. The market heavily targets ranchwork, rodeo, and performance niches with messaging around quick results, natural/drug-free care, and preventative maintenance. Multimodal bodywork (massage, myofascial release, PEMF) and VOM (veterinary orthopedic manipulation) are emerging as adjacent service extensions.",
   "sources": [
-    "https://www.instagram.com/sport.horse.chiropractic/",
     "https://www.facebook.com/dodgefamilyandanimalchiro/",
-    "https://peachcreekchiropractic.com/animal-chiropractic/",
     "https://heartandhoofchiro.com/",
+    "https://www.ktvh.com/news/montana-ag-network/mt-ag-network-from-humans-to-horses-montana-chiropractor-adjusts-ranching-way-of-life",
     "https://www.eliteanimalchirotx.com/",
-    "https://www.equinechiropracticcare.com/",
-    "https://www.bp-equine.com/",
-    "https://kellysequineservices.com/equine-bodywork/",
-    "https://synchronychiro.com/chiropractic-care-for-barrel-racing-horses-what-every-rider-should-know/",
+    "https://www.instagram.com/sport.horse.chiropractic/",
     "https://cowboystatedaily.com/2025/07/13/meet-dr-cowboy-the-animal-chiropractor-putting-more-buck-into-rodeo-bulls/",
-    "https://www.tsln.com/horse-rodeo/saddle-sore-no-morend-chiropractor-helps-human-and-equine-patients/",
-    "https://www.snapchat.com/topic/equine-chiropractic",
-    "https://www.youtube.com/@Sport.Horse.Chiropractic"
+    "https://www.bp-equine.com/",
+    "https://www.texaseeh.com/post/equine-bodywork-pemf-massage-and-chiropractic",
+    "https://www.yourbesthorse.com/",
+    "https://atxequinewellness.com/"
   ]
 }
