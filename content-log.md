@@ -18,6 +18,9 @@ Buckets: Educational, Proof, Personal, Offer
 **Backfilled 2026-05-28 from cloud state (`state/scheduled-fb-index.json` + `state/pending-ig.json` + GBP merchant view).** Going forward, the Sunday cloud agent should append each successful FB schedule / IG queue here automatically — see "Wire mirror-on-post" punchlist item.
 
 <!-- add lines below as you post -->
+2026-06-24 | FB + IG | Static | "YOUR HORSE'S TOPLINE IS DROPPING. THAT'S NOT A FEED PROBLEM." (`2026-06-24-edu-topline-dropping`) — SCHEDULED, fires 2026-06-24 14:00 CDT | Educational
+2026-06-26 | FB + IG | Static | ""PEOPLE KEPT TELLING ME HE WAS JUST HOT. DR. LEO FOUND THREE THINGS LOCKED UP IN" (`2026-06-26-quote-quieter-horse`) — SCHEDULED, fires 2026-06-26 14:00 CDT | Proof (quote-format)
+2026-06-28 | FB + IG | Static | "LATE JUNE. YOUR HORSE HAS BEEN HAULING AND RUNNING. WHEN DID ANYONE LAST CHECK H" (`2026-06-28-cta-late-june-maintenance`) — SCHEDULED, fires 2026-06-28 14:00 CDT | Offer
 2026-06-17 | FB + IG | Static | "YOUR HORSE ISN'T FIGHTING THE BRIDLE. HE'S TELLING YOU HIS NECK IS LOCKED UP." (`2026-06-17-edu-neck-stiffness-bridle-resistance`) — SCHEDULED, fires 2026-06-17 14:00 CDT | Educational
 2026-06-19 | FB + IG | Static | ""I'VE OWNED HER SIX YEARS. SHE'S NEVER BEEN THAT SOFT THROUGH THE BACK."" (`2026-06-19-quote-finally-soft-in-the-back`) — SCHEDULED, fires 2026-06-19 14:00 CDT | Proof (quote-format)
 2026-06-21 | FB + IG | Static | "JUNE IS HALFWAY DONE. YOUR HORSE HAS BEEN WORKING. HAS ANYONE CHECKED HIM?" (`2026-06-21-cta-midsummer-checkup`) — SCHEDULED, fires 2026-06-21 14:00 CDT | Offer
