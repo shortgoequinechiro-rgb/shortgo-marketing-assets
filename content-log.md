@@ -18,6 +18,9 @@ Buckets: Educational, Proof, Personal, Offer
 **Backfilled 2026-05-28 from cloud state (`state/scheduled-fb-index.json` + `state/pending-ig.json` + GBP merchant view).** Going forward, the Sunday cloud agent should append each successful FB schedule / IG queue here automatically — see "Wire mirror-on-post" punchlist item.
 
 <!-- add lines below as you post -->
+2026-07-08 | FB + IG | Static | "YOUR HORSE IS LOSING GROUND BEHIND THE CATTLE." (`2026-07-08-edu-hindquarter-push`) — SCHEDULED, fires 2026-07-08 14:00 CDT | Educational
+2026-07-10 | FB + IG | Static | ""I THOUGHT SHE JUST HAD A BAD ATTITUDE. TURNS OUT SHE HAD A BAD BACK."" (`2026-07-10-quote-attitude-changed`) — SCHEDULED, fires 2026-07-10 14:00 CDT | Proof (quote-format)
+2026-07-12 | FB + IG | Static | "JULY IS HALF GONE. YOUR HORSE HAS BEEN WORKING SINCE MARCH." (`2026-07-12-cta-midsummer-tuneup`) — SCHEDULED, fires 2026-07-12 14:00 CDT | Offer
 2026-07-01 | FB + IG | Static | "YOUR HORSE WON'T COLLECT. IT'S NOT A TRAINING HOLE." (`2026-07-01-edu-collection-resistance-back`) — SCHEDULED, fires 2026-07-01 14:00 CDT | Educational
 2026-07-03 | FB + IG | Static | ""HIS STOPS GOT HARDER AFTER ONE VISIT. I THOUGHT THAT WAS GOING TO TAKE ALL SUMM" (`2026-07-03-quote-stops-harder-north-texas`) — SCHEDULED, fires 2026-07-03 14:00 CDT | Proof (quote-format)
 2026-07-05 | FB + IG | Static | "JULY IS HERE. YOUR HORSE HAS BEEN WORKING ALL SUMMER. WHEN DID ANYONE LAST CHECK" (`2026-07-05-cta-july-dfwmt-maintenance`) — SCHEDULED, fires 2026-07-05 14:00 CDT | Offer
