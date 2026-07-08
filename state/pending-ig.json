@@ -1,13 +1,5 @@
 [
   {
-    "post_id": "2026-07-08-edu-hindquarter-push",
-    "scheduled_at": "2026-07-08T14:00:00-05:00",
-    "image_url": "https://raw.githubusercontent.com/shortgoequinechiro-rgb/shortgo-marketing-assets/main/posts/2026-07-08/2026-07-08-edu-hindquarter-push.png",
-    "caption": "If your horse used to drive hard from behind and now he's just\u2026 coasting, that's not fitness. That's not age. That's worth checking.\n\nHorse's that lose hind-end push are often locked through the pelvis and lower back. The joints stop moving freely, and the power doesn't get transferred forward. What looks like a lazy stop or a weak rate is actually a horse working around something that hurts.\n\nDr. Leo sees this pattern across the performance horses he works in North Texas \u2014 ropers, barrel horses, cutters. Different disciplines, same locked-up hips.\n\nYou can keep drilling the rate. Or you can find out why it disappeared.\n\nBook now \u2014 shortgochiro.com or call (406) 799-3369.",
-    "last_error": "HTTP 400 on POST /17841480145217178/media_publish: {'error': {'message': 'Media ID is not available', 'type': 'OAuthException', 'code': 9007, 'error_subcode': 2207027, 'is_transient': False, 'error_user_title': 'Cannot Publish', 'error_user_msg': 'The media is not ready for publishing, please wait for a moment', 'fbtrace_id': 'AbnjVAvzK_FJ8MuAMqSHWAp'}}",
-    "last_attempted_at": "2026-07-08T20:22:07.413302+00:00"
-  },
-  {
     "post_id": "2026-07-10-quote-attitude-changed",
     "scheduled_at": "2026-07-10T14:00:00-05:00",
     "image_url": "https://raw.githubusercontent.com/shortgoequinechiro-rgb/shortgo-marketing-assets/main/posts/2026-07-10/2026-07-10-quote-attitude-changed.png",
