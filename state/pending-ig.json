@@ -4,8 +4,8 @@
     "scheduled_at": "2026-07-22T14:00:00-05:00",
     "image_url": "https://raw.githubusercontent.com/shortgoequinechiro-rgb/shortgo-marketing-assets/main/posts/2026-07-22/2026-07-22-edu-feet-to-poll-stiffness.png",
     "caption": "The horses that worry me most aren't the ones acting ouchy. They're the ones that just seem a little off \u2014 nothing you can put your finger on, nothing a vet pulls up lame. They just aren't right.\n\nThat quiet kind of restriction is real. It shows up in flat runs, short first steps, a horse that used to feel electric and now just feels like work.\n\nDr. Leo works mobile across North Texas and the Great Falls area. He comes to your barn, assesses the whole horse, and puts hands on what's actually restricted \u2014 not just what's obvious.\n\nIf something's been nagging at you about your horse's movement, trust that instinct.\n\nBook now \u2014 shortgochiro.com or (406) 799-3369.",
-    "last_error": "HTTP 400 on POST /17841480145217178/media_publish: {'error': {'message': 'Media ID is not available', 'type': 'OAuthException', 'code': 9007, 'error_subcode': 2207027, 'is_transient': False, 'error_user_title': 'Cannot Publish', 'error_user_msg': 'The media is not ready for publishing, please wait for a moment', 'fbtrace_id': 'ALclTeez_gSMdqDf9NQCS7i'}}",
-    "last_attempted_at": "2026-07-22T19:23:20.075523+00:00"
+    "last_error": "HTTP 400 on POST /17841480145217178/media_publish: {'error': {'message': 'Media ID is not available', 'type': 'OAuthException', 'code': 9007, 'error_subcode': 2207027, 'is_transient': False, 'error_user_title': 'Cannot Publish', 'error_user_msg': 'The media is not ready for publishing, please wait for a moment', 'fbtrace_id': 'AZsjyJrR4ZvccUew7eBLImD'}}",
+    "last_attempted_at": "2026-07-22T21:20:13.317297+00:00"
   },
   {
     "post_id": "2026-07-24-quote-run-felt-different",
