@@ -1,50 +1,49 @@
 {
-  "scanned_at": "2026-07-19T10:55:22.544726+00:00",
+  "scanned_at": "2026-07-26T11:04:49.445567+00:00",
   "recent_topics": [
-    "Post-haul and travel recovery (trailering stress, compensation patterns)",
-    "Hock and sacroiliac issues in hard-working performance horses",
-    "Uneven stride, lead-picking problems, and gait abnormalities",
-    "Saddle fit and rider posture optimization affecting spinal alignment",
-    "Back soreness, girthiness, and behavioral changes under saddle",
-    "Performance plateau and reluctance in barrel, roping, and cutting horses",
-    "Preventive maintenance for rodeo stock (bulls, bucking horses)",
-    "Compensation patterns and asymmetries from repetitive training",
-    "Cold laser, PEMF, and massage integration with chiropractic care"
+    "Sacroiliac joint (SI joint) adjustments & hind-end dysfunction",
+    "Post-haul and travel stiffness recovery",
+    "Gait abnormalities and uneven stride issues",
+    "Performance plateaus and loss of athleticism in working horses",
+    "Compensation patterns from saddle fit or rider imbalance",
+    "Behavioral changes under saddle (resistance, ear pinning, tail swishing)",
+    "Rodeo-specific trauma: bucking stock revitalization and bull conditioning",
+    "Whole-horse assessment blending chiropractic with massage and bodywork",
+    "VOM (Veterinary Orthopedic Manipulation) as specialized technique for livestock"
   ],
   "common_hook_patterns": [
-    "Problem-symptom identifier: 'Your horse is [symptom]\u2014here's why' (uneven stride, missed lead, behavioral change)",
-    "Before/after gait or movement testimonial: 'After adjustments, my horse is moving like...'",
-    "Educational authority: 'Did you know horses hide their discomfort?' / 'What you're seeing is actually...'",
-    "Rodeo/roper/barrel-horse specificity: 'If your rope horse is...' or 'Hard stops and turns load the back'",
-    "Preventive care framing: 'Regular check-ups catch problems before they escalate'",
-    "Performance unlocked: 'This is why your horse can't perform at their best'",
-    "Mobile convenience angle: 'No trailering a sore horse\u2014we come to you'"
+    "Before/after gait video clips showing stride improvement post-adjustment",
+    "\"Did you know your horse can hide pain?\" \u2014 preventative early screening angle",
+    "\"It's not always the saddle/bit\" \u2014 misattribution of performance issues",
+    "\"3 signs your horse needs an adjustment\" \u2014 quick diagnostic checklist",
+    "Testimonial format: rider noticing difference in \"first ride after adjustment\"",
+    "Rodeo-performance angle: \"Getting your horse back to bucking form\" or \"recovering speed/stop\"",
+    "Educational content on palpation techniques for owners",
+    "Close-up action shots of hands-on adjustment with dramatic sound/reaction"
   ],
   "dominant_visual_styles": [
-    "Before/after side-by-side gait video (trotting/walking showing difference in stride)",
-    "Clinical close-up of hands-on adjustment during treatment (palpation, joint mobilization)",
-    "Horse-and-rider action shots in arena (barrel racing, roping, cutting, jumping)",
-    "Testimonial/review carousel and text-overlay graphics (client quotes, 5-star)",
-    "Anatomy diagram overlays (spine illustration, hock anatomy, sacroiliac position)",
-    "Mobile barn-call lifestyle imagery (horse in own stall, no trailering stress)"
+    "Clinical close-up: hands palpating and adjusting spine/SI joint with horse in stall",
+    "Before/after gait video: trotting or cantering side-by-side comparison",
+    "Barn/outdoor setting with horse standing relaxed while chiropractor works",
+    "Reaction content: horse visibly responsive or releasing tension during adjustment",
+    "Anatomy overlay or diagram explaining vertebrae/joint dysfunction on photo",
+    "Action shot of full-body adjustment or stretch maneuver in motion"
   ],
-  "raw_summary": "Equine chiropractors and bodyworkers across the rodeo and performance horse space are converging on a core narrative: hard-working horses show subtle signs of spinal and joint restriction (uneven stride, lead problems, behavioral changes, refusal), which chiropractic and integrated bodywork fix quickly and visibly. The strongest hook patterns are educational (what the symptom really means) and outcome-driven (before/after movement proof). Rodeo and ranch practitioners heavily emphasize mobile barn-call convenience to avoid trailering stress, saddle-fit optimization, and the specific demands of rope/barrel/cutting disciplines. Montana-based bodyworkers lean into Masterson Method and integrated therapies (Indiba, myofascial release, cold laser, PEMF). Texas chiropractors focus on high-frequency performance maintenance (every 4\u20136 weeks for competition horses) and prevention of compensation patterns. The visual language is clinical and action-oriented: hands palpating, horses moving, rider testimonials, and anatomical clarity.",
+  "raw_summary": "Equine chiropractors and bodyworkers across rodeo, ranch, and performance circuits emphasize whole-horse mobility and compensation-pattern detection. Recurring topics center on gait dysfunction, post-travel stiffness, and hind-end issues (especially sacroiliac adjustments), with strong rodeo-specific positioning around horse conditioning, bucking stock recovery, and performance restoration. Content hooks leverage \"before/after\" proof and early-detection messaging, often reframing performance problems as structural misalignment rather than training or tack issues. Visual strategy relies on clinical close-ups of hand techniques, gait video comparisons, and dramatic reaction shots. Practitioners frequently blend chiropractic with complementary modalities (massage, myofascial release, kinesiology taping, cellular therapy). Montana and Texas markets show particular overlap of rodeo professionals, ranch horse specialists, and mobile practitioners.",
   "sources": [
     "https://www.instagram.com/sport.horse.chiropractic/",
-    "https://www.instagram.com/farmhousechiropractic/",
+    "https://www.facebook.com/northtexasequine/",
+    "https://www.facebook.com/equipuncture/",
     "https://heartandhoofchiro.com/",
-    "https://www.eliteanimalchirotx.com/",
     "https://www.equinechiropracticcare.com/",
-    "https://djvstexas.com/horse-vet-mobile-equine-veterinary-services-chiropractic/",
     "https://www.allstaranimalchiropractic.com/",
-    "https://foundationequine.com/chiropractic",
+    "https://cowboystatedaily.com/2025/07/13/meet-dr-cowboy-the-animal-chiropractor-putting-more-buck-into-rodeo-bulls/",
     "https://www.bp-equine.com/",
     "https://montanarosequinetherapy.com/",
-    "https://kellysequineservices.com/equine-bodywork/",
     "https://www.reviveequinebodywork.com/",
-    "https://cowboystatedaily.com/2025/07/13/meet-dr-cowboy-the-animal-chiropractor-putting-more-buck-into-rodeo-bulls/",
     "https://peachcreekchiropractic.com/animal-chiropractic/",
-    "https://www.creekside-vet.com/equine-chiropractic",
-    "https://www.thewellbalancedanimal.com/equine-chiropractic"
+    "https://durangoanimalchiropractor.com/",
+    "https://www.equissagetexas.com/",
+    "https://caequissage.com/"
   ]
 }
