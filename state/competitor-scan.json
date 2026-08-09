@@ -1,49 +1,45 @@
 {
-  "scanned_at": "2026-07-26T11:04:49.445567+00:00",
+  "scanned_at": "2026-08-09T10:06:34.521984+00:00",
   "recent_topics": [
-    "Sacroiliac joint (SI joint) adjustments & hind-end dysfunction",
-    "Post-haul and travel stiffness recovery",
-    "Gait abnormalities and uneven stride issues",
-    "Performance plateaus and loss of athleticism in working horses",
-    "Compensation patterns from saddle fit or rider imbalance",
-    "Behavioral changes under saddle (resistance, ear pinning, tail swishing)",
-    "Rodeo-specific trauma: bucking stock revitalization and bull conditioning",
-    "Whole-horse assessment blending chiropractic with massage and bodywork",
-    "VOM (Veterinary Orthopedic Manipulation) as specialized technique for livestock"
+    "Post-haul recovery and transportation stress",
+    "Saddle fit and back soreness in performance horses",
+    "Gait asymmetry and uneven stride detection",
+    "TMJ (temporomandibular joint) release and jaw tension",
+    "Compensation patterns from training overload",
+    "Rodeo-specific injury prevention and bucking horse/bull alignment",
+    "Myofascial release and tension management",
+    "Pre- and post-event performance optimization",
+    "Recovery from chronic stiffness in aging/geriatric horses"
   ],
   "common_hook_patterns": [
-    "Before/after gait video clips showing stride improvement post-adjustment",
-    "\"Did you know your horse can hide pain?\" \u2014 preventative early screening angle",
-    "\"It's not always the saddle/bit\" \u2014 misattribution of performance issues",
-    "\"3 signs your horse needs an adjustment\" \u2014 quick diagnostic checklist",
-    "Testimonial format: rider noticing difference in \"first ride after adjustment\"",
-    "Rodeo-performance angle: \"Getting your horse back to bucking form\" or \"recovering speed/stop\"",
-    "Educational content on palpation techniques for owners",
-    "Close-up action shots of hands-on adjustment with dramatic sound/reaction"
+    "Before-and-after mobility testimonials ('I could feel the difference immediately')",
+    "List-style education ('3 signs your horse needs adjustment')",
+    "Problem-solution framing ('It's not the bit, it's the sacroiliac')",
+    "Performance-focused CTA ('Unlock your horse's full potential')",
+    "Evidence-backed benefit statements ('Restores proper neuromuscular function')",
+    "Rodeo-and-ranch credibility ('30+ years serving performance horses')",
+    "Preventative maintenance angle ('Don't wait until lameness shows')"
   ],
   "dominant_visual_styles": [
-    "Clinical close-up: hands palpating and adjusting spine/SI joint with horse in stall",
-    "Before/after gait video: trotting or cantering side-by-side comparison",
-    "Barn/outdoor setting with horse standing relaxed while chiropractor works",
-    "Reaction content: horse visibly responsive or releasing tension during adjustment",
-    "Anatomy overlay or diagram explaining vertebrae/joint dysfunction on photo",
-    "Action shot of full-body adjustment or stretch maneuver in motion"
+    "Clinical close-up of hands-on adjustment/palpation during treatment",
+    "Horse in motion (walk/trot in-hand and under saddle) as proof of improvement",
+    "Practitioner with horse and rider at sunset/barn setting (rural-luxury framing)",
+    "Anatomy diagram overlays with highlighted problem areas (TMJ, sacrum, hock)",
+    "Before-after split-screen gait comparison",
+    "Testimonial video clips from satisfied rodeo/ranch owners"
   ],
-  "raw_summary": "Equine chiropractors and bodyworkers across rodeo, ranch, and performance circuits emphasize whole-horse mobility and compensation-pattern detection. Recurring topics center on gait dysfunction, post-travel stiffness, and hind-end issues (especially sacroiliac adjustments), with strong rodeo-specific positioning around horse conditioning, bucking stock recovery, and performance restoration. Content hooks leverage \"before/after\" proof and early-detection messaging, often reframing performance problems as structural misalignment rather than training or tack issues. Visual strategy relies on clinical close-ups of hand techniques, gait video comparisons, and dramatic reaction shots. Practitioners frequently blend chiropractic with complementary modalities (massage, myofascial release, kinesiology taping, cellular therapy). Montana and Texas markets show particular overlap of rodeo professionals, ranch horse specialists, and mobile practitioners.",
+  "raw_summary": "Across competitors in Texas, Montana, and nationally, equine chiropractors and bodyworkers are emphasizing performance optimization, injury prevention, and post-event/post-haul recovery. The rodeo circuit generates strong traction for practitioners like <cite index=\"30-6,30-9,30-10\">Justin Beasley (VOM specialist working on bucking broncs and bulls)</cite>, while <cite index=\"1-1\">Sport Horse Chiropractic (161K IG followers)</cite> focuses on stretching and mobility education. <cite index=\"41-1,41-2,41-3\">Montana-based Balance Point Equine Bodywork serves ranch horses, rodeo athletes, and retirees using massage and myofascial release.</cite> <cite index=\"17-1,17-4,17-5\">Heart and Hoof Chiropractic (Dr. Rhonda Parker, Texas) emphasizes building trust and evaluating horses 'from HOOF up to head and back to tail.'</cite> Educational hooks center on gait analysis, compensation patterns, and the link between spinal alignment and performance. Visuals typically feature hands-on clinical work, in-motion gait footage, and barn/rural settings. <cite index=\"36-1,36-2,36-3\">A current competitive landscape shift: Texas is debating rule changes (April 2026 hearing) that could restrict equine chiropractic work to licensed veterinarians</cite>, positioning certified practitioners as higher-value partners.",
   "sources": [
     "https://www.instagram.com/sport.horse.chiropractic/",
-    "https://www.facebook.com/northtexasequine/",
-    "https://www.facebook.com/equipuncture/",
     "https://heartandhoofchiro.com/",
-    "https://www.equinechiropracticcare.com/",
-    "https://www.allstaranimalchiropractic.com/",
-    "https://cowboystatedaily.com/2025/07/13/meet-dr-cowboy-the-animal-chiropractor-putting-more-buck-into-rodeo-bulls/",
     "https://www.bp-equine.com/",
+    "https://cowboystatedaily.com/2025/07/13/meet-dr-cowboy-the-animal-chiropractor-putting-more-buck-into-rodeo-bulls/",
+    "https://www.agdaily.com/livestock/potential-changes-texas-rule-could-reshape-equine-care/",
+    "https://txequine.com/",
+    "https://www.eliteanimalchirotx.com/",
     "https://montanarosequinetherapy.com/",
-    "https://www.reviveequinebodywork.com/",
-    "https://peachcreekchiropractic.com/animal-chiropractic/",
-    "https://durangoanimalchiropractor.com/",
     "https://www.equissagetexas.com/",
-    "https://caequissage.com/"
+    "https://madbarn.com/service/equine-chiropractor/location/texas/",
+    "https://www.horseforum.com/threads/equine-chiropractic.838085/"
   ]
 }

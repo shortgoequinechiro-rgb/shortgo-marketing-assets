@@ -18,6 +18,9 @@ Buckets: Educational, Proof, Personal, Offer
 **Backfilled 2026-05-28 from cloud state (`state/scheduled-fb-index.json` + `state/pending-ig.json` + GBP merchant view).** Going forward, the Sunday cloud agent should append each successful FB schedule / IG queue here automatically — see "Wire mirror-on-post" punchlist item.
 
 <!-- add lines below as you post -->
+2026-08-12 | FB + IG | Static | "YOUR HORSE SWINGS WIDE THROUGH THE TURN. THAT'S NOT A LEG PROBLEM." (`2026-08-12-edu-rib-cage-resistance`) — SCHEDULED, fires 2026-08-12 14:00 CDT | Educational
+2026-08-14 | FB + IG | Static | ""WE'RE IN THE QUALIFYING STRETCH. I CAN'T AFFORD FOR HIM TO FEEL LIKE LAST MONTH" (`2026-08-14-quote-nfr-qualifying-stretch`) — SCHEDULED, fires 2026-08-14 14:00 CDT | Proof (quote-format)
+2026-08-16 | FB + IG | Static | "AUGUST IS ALMOST HALF OVER. YOUR HORSE HASN'T HAD A DAY OFF SINCE SPRING." (`2026-08-16-cta-late-summer-season-push`) — SCHEDULED, fires 2026-08-16 14:00 CDT | Offer
 2026-08-05 | FB + IG | Static | "YOUR HORSE TILTS HIS HEAD. THAT'S NOT A HABIT." (`2026-08-05-edu-poll-tension-head-tilt`) — SCHEDULED, fires 2026-08-05 14:00 CDT | Educational
 2026-08-07 | FB + IG | Static | ""I'VE BEEN CHASING A TRAINING FIX FOR TWO YEARS. IT WAS NEVER A TRAINING PROBLEM" (`2026-08-07-quote-first-ride-quiet`) — SCHEDULED, fires 2026-08-07 14:00 CDT | Proof (quote-format)
 2026-08-09 | FB + IG | Static | "AUGUST IS PEAK SEASON. YOUR HORSE HAS BEEN EARNING IT." (`2026-08-09-cta-late-summer-peak`) — SCHEDULED, fires 2026-08-09 14:00 CDT | Offer
