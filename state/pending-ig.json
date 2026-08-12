@@ -3,7 +3,9 @@
     "post_id": "2026-08-12-edu-rib-cage-resistance",
     "scheduled_at": "2026-08-12T14:00:00-05:00",
     "image_url": "https://raw.githubusercontent.com/shortgoequinechiro-rgb/shortgo-marketing-assets/main/posts/2026-08-12/2026-08-12-edu-rib-cage-resistance.png",
-    "caption": "Your horse swings wide through the turn. You correct with your leg. He does it again.\n\nMost North Texas barrel racers chalk that up to a training issue \u2014 or blame the footing.\n\nHere's what Dr. Leo looks for first: rib cage mobility. When those joints lock up, your horse physically cannot bend through his body the way the turn demands. He compensates by drifting. Every time.\n\nNo amount of leg pressure fixes a structural restriction.\n\nIf your horse has been running wide and you've already ruled out the obvious, it's worth having Dr. Leo take a look before your next run.\n\nBook now \u2014 shortgochiro.com or (406) 799-3369."
+    "caption": "Your horse swings wide through the turn. You correct with your leg. He does it again.\n\nMost North Texas barrel racers chalk that up to a training issue \u2014 or blame the footing.\n\nHere's what Dr. Leo looks for first: rib cage mobility. When those joints lock up, your horse physically cannot bend through his body the way the turn demands. He compensates by drifting. Every time.\n\nNo amount of leg pressure fixes a structural restriction.\n\nIf your horse has been running wide and you've already ruled out the obvious, it's worth having Dr. Leo take a look before your next run.\n\nBook now \u2014 shortgochiro.com or (406) 799-3369.",
+    "last_error": "HTTP 400 on POST /17841480145217178/media_publish: {'error': {'message': 'Media ID is not available', 'type': 'OAuthException', 'code': 9007, 'error_subcode': 2207027, 'is_transient': False, 'error_user_title': 'Cannot Publish', 'error_user_msg': 'The media is not ready for publishing, please wait for a moment', 'fbtrace_id': 'Au1jXGTlfHun7r5QsA2xhYr'}}",
+    "last_attempted_at": "2026-08-12T19:12:50.656390+00:00"
   },
   {
     "post_id": "2026-08-14-quote-nfr-qualifying-stretch",
