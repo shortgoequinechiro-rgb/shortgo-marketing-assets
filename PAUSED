@@ -1,0 +1,28 @@
+Short Go auto-posting is PAUSED.
+
+Paused: 2026-08-19, at Charles's request.
+
+While this file exists, lib/sunday_cloud_agent.py exits immediately on every
+run. Nothing is drafted, rendered, scheduled to Facebook or Instagram, or
+emailed. The Sunday workflow still runs on GitHub's cron but does nothing.
+
+Also done at pause time:
+  - state/pending-ig.json emptied, so the hourly IG fire job short-circuits.
+    (The 3 queued IG posts for 8/19, 8/21, 8/23 are recoverable from commit
+    f04847c if ever wanted.)
+  - 3 Facebook posts were ALREADY sitting in Meta's own scheduler at pause
+    time and are NOT controlled by this repo. They must be deleted inside
+    Meta Business Suite -> Planner:
+        2026-08-19-edu-back-end-refusal          980163335173953_122138428581204578
+        2026-08-21-quote-slow-to-load            980163335173953_122138428665204578
+        2026-08-23-cta-late-summer-final-push    980163335173953_122138428749204578
+
+Note: the cron blocks in .github/workflows/ were NOT edited — the repo token
+lacks the `workflow` scope. Disable both workflows from the Actions tab UI to
+stop the pointless weekly/hourly runs entirely.
+
+TO RESUME
+  1. Delete this file.
+  2. Re-enable the workflows in the Actions tab if they were disabled there.
+  Single manual run without deleting this file: run the workflow via
+  workflow_dispatch with SHORT_GO_AGENT_FORCE=1 in the environment.
