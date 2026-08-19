@@ -1,6 +1,9 @@
 """
 Short Go agent — cloud-hosted Sunday run.
 
+⏸ PAUSED 2026-08-19 at Charles's request. See the `_paused()` guard at the top
+of main(). Delete the `PAUSED` file at the repo root to resume.
+
 Orchestrates the full weekly post pipeline. Designed to run unattended in
 GitHub Actions (or any cloud cron):
 
@@ -37,6 +40,26 @@ from zoneinfo import ZoneInfo
 # Bring the lib path into scope when run directly
 _THIS = Path(__file__).resolve()
 sys.path.insert(0, str(_THIS.parent))
+
+
+# ---------------------------------------------------------------------------
+# Pause guard
+# ---------------------------------------------------------------------------
+
+def _paused() -> bool:
+    """True when auto-posting is switched off.
+
+    A `PAUSED` file at the repo root is the off switch. It exists because the
+    repo token can't edit .github/workflows/, so the cron itself can't be
+    commented out from here — this stops the run instead.
+
+    Resume: delete the PAUSED file.
+    One-off override (manual workflow_dispatch): set SHORT_GO_AGENT_FORCE=1.
+    """
+    if os.environ.get("SHORT_GO_AGENT_FORCE") == "1":
+        return False
+    return (_THIS.parent.parent / "PAUSED").exists()
+
 
 # ---------------------------------------------------------------------------
 # Credentials loader — env first, then disk
@@ -194,6 +217,12 @@ Respond with JSON only."""
 # ---------------------------------------------------------------------------
 
 def main() -> int:
+    if _paused():
+        print("PAUSED: Short Go auto-posting is switched off (PAUSED file present).")
+        print("        No posts drafted, rendered, scheduled, or emailed.")
+        print("        To resume: delete the PAUSED file at the repo root.")
+        return 0
+
     repo_root = Path(__file__).resolve().parent.parent  # Marketing Agent/
     secrets = load_all_secrets()
     missing = [k for k, v in secrets.items() if not v and k not in ("meta_ig_user_id",)]
